@@ -1,0 +1,30 @@
+server:
+  port: 8080
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:mysql://${mkdir.db.host}:${mkdir.db.port}/${mkdir.db.database}
+    username: ${mkdir.db.username}
+    password: ${mkdir.db.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    cache: false
+jwt:
+  key: ${mkdir.jwt.key}
+file:
+  upload:
+    dir: ${mkdir.file.path}
+tencent:
+  cos:
+    secret-id: ${mkdir.cos.secret-id}
+    secret-key: ${mkdir.cos.secret-key}
+    region: ${mkdir.cos.region}
+    bucket-name: ${mkdir.cos.bucket-name}

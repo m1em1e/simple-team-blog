@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.genntii.mkdir.mapper.CategoryMapper">
+    <select id="getCategoryVOList" resultType="org.genntii.mkdir.domain.vo.CategoryVO"
+        parameterType="list">
+        select id, category_name
+        from mkdir.category
+        where status = 1 and
+        id in 
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

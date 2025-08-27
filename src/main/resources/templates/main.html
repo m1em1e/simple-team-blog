@@ -226,16 +226,7 @@
                                 window.location.href = '/login';
                             }, 2000);
                         }
-                    })
-                    .catch(error => {
-                        // 请求失败，清除本地token并跳转到登录页
-                        localStorage.removeItem('authToken');
-                        showError('登录验证失败: ' + error.message);
-                        setTimeout(() => {
-                            window.location.href = '/login';
-                        }, 2000);
-                    })
-                    .finally(() => {
+                    }).finally(() => {
                         // 隐藏加载状态
                         if (loadingSpinner) loadingSpinner.style.display = 'none';
                     });

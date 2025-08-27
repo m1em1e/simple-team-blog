@@ -210,9 +210,6 @@
                 })
                     .then(response => {
                         if (!response.ok) {
-                            if (response.status === 401) {
-                                throw new Error('登录已过期，请重新登录');
-                            }
                             throw new Error('网络响应错误');
                         }
                         return response.json();
@@ -232,25 +229,13 @@
                                     successAlert.style.display = 'none';
                                 }, 3000);
                             }
-                        } else {
-                            // token无效，清除本地存储并跳转到登录页
-                            localStorage.removeItem('authToken');
-                            showError('登录已过期，请重新登录');
-                            setTimeout(() => {
-                                window.location.href = '/login';
-                            }, 2000);
                         }
                     }).finally(() => {
                     // 隐藏加载状态
                     if (loadingSpinner) loadingSpinner.style.display = 'none';
                 });
             } else {
-                // 没有token，跳转到登录页
-                if (loadingSpinner) loadingSpinner.style.display = 'none';
-                showError('请先登录');
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 2000);
+                loadingSpinner.style.display = 'none';
             }
         }
 

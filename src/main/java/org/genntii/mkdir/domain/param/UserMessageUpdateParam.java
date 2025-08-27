@@ -11,7 +11,6 @@ import java.util.List;
  */
 @Data
 public class UserMessageUpdateParam {
-    private Long id;
     private String nickname;
     private String avatar;
     private Byte sex;

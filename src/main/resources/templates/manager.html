@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 定义全局颜色变量，便于统一管理页面主题色 */
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+        }
+
+        /* 设置页面背景和字体 */
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        /* 卡片样式：去除边框、添加圆角和阴影效果 */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        /* 卡片头部样式：设置背景色、下边框和内边距 */
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.35rem;
+            font-weight: 700;
+        }
+
+        /* 个人信息区域样式：渐变背景、文字颜色、圆角等 */
+        .profile-section {
+            background: linear-gradient(180deg, var(--primary-color) 10%, #224abe 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* 头像上传容器：相对定位，用于放置上传按钮 */
+        .avatar-upload {
+            position: relative;
+            width: 150px;
+            margin: 0 auto;
+        }
+
+        /* 头像预览区域：圆形头像、边框、阴影 */
+        .avatar-preview {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            overflow: hidden;
+        }
+
+        /* 头像图片：填充整个预览区域并保持比例 */
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 头像上传按钮：绝对定位在右下角，圆形按钮 */
+        .avatar-upload-btn {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.3);
+        }
+
+        /* 标签样式：内联块元素，带背景色和圆角 */
+        .tag {
+            display: inline-block;
+            padding: 0.35em 0.65em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            background-color: var(--primary-color);
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 表单控件聚焦时的样式：高亮边框和阴影 */
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        /* 主按钮样式：使用主色调 */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* 主按钮悬停样式 */
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+
+        /* 最后登录时间样式：小字体和浅灰色 */
+        .last-login {
+            font-size: 0.9rem;
+            color: #b7b9cc;
+        }
+
+        /* 加载动画容器：默认隐藏，居中显示 */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* 旋转加载图标尺寸 */
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <!-- 用户信息卡片 -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="m-0 font-weight-bold text-primary">用户信息管理</h5>
+                    <span class="last-login" id="lastLoginTime"></span>
+                </div>
+                <div class="card-body">
+                    <!-- 加载状态 -->
+                    <div class="loading" id="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">加载中...</span>
+                        </div>
+                        <p class="mt-2">加载用户信息中...</p>
+                    </div>
+
+                    <!-- 用户信息内容 -->
+                    <div id="userInfoContent" style="display: none;">
+                        <div class="row">
+                            <div class="col-xl-4">
+                                <div class="profile-section text-center">
+                                    <div class="avatar-upload">
+                                        <div class="avatar-preview">
+                                            <img id="avatarPreview" src="" alt="用户头像">
+                                        </div>
+                                        <div class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                        <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="uploadAvatar()">
+                                    </div>
+                                    <h3 class="mt-3" id="nickname">用户名</h3>
+                                    <p id="description">暂无个人简介</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-8">
+                                <form id="userForm" onsubmit="updateUserInfo(event)">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="nicknameInput" class="form-label">昵称</label>
+                                            <input type="text" class="form-control" id="nicknameInput" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="sexSelect" class="form-label">性别</label>
+                                            <select class="form-select" id="sexSelect">
+                                                <option value="0">未知</option>
+                                                <option value="1">男</option>
+                                                <option value="2">女</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="birthdayInput" class="form-label">生日</label>
+                                            <input type="date" class="form-control" id="birthdayInput">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="tagsInput" class="form-label">标签（多个标签用逗号分隔）</label>
+                                        <input type="text" class="form-control" id="tagsInput" placeholder="例如: 旅行,音乐,阅读">
+                                        <div class="mt-2" id="tagsContainer"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="descriptionTextarea" class="form-label">个人简介</label>
+                                        <textarea class="form-control" id="descriptionTextarea" rows="3"></textarea>
+                                    </div>
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <button type="submit" class="btn btn-primary">保存更改</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 错误信息 -->
+                    <div class="alert alert-danger mt-3" role="alert" id="errorAlert" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /**
+     * 从当前URL路径中提取用户ID
+     * @returns {string} 用户ID字符串
+     */
+    function getUserIdFromUrl() {
+        const pathSegments = window.location.pathname.split('/');
+        return pathSegments[pathSegments.length - 1];
+    }
+
+    /**
+     * 从本地存储中获取认证令牌
+     * @returns {string|null} 认证令牌或null
+     */
+    function getAuthToken() {
+        return localStorage.getItem('authToken');
+    }
+
+    /**
+     * 显示错误信息并在5秒后自动隐藏
+     * @param {string} message - 要显示的错误消息
+     */
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.textContent = message;
+        errorAlert.style.display = 'block';
+        setTimeout(() => {
+            errorAlert.style.display = 'none';
+        }, 5000);
+    }
+
+    /**
+     * 异步获取用户信息并更新页面显示
+     * 包含加载状态切换和错误处理逻辑
+     */
+    async function fetchUserInfo() {
+        const userId = getUserIdFromUrl();
+
+        // 显示加载状态，隐藏内容区域
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('userInfoContent').style.display = 'none';
+
+        try {
+            const response = await fetch(`/api/user/${userId}`, {
+                method: 'GET'
+            });
+
+            const data = await response.json();
+
+            if (data.code === 1) {
+                displayUserInfo(data.data);
+                document.getElementById('userInfoContent').style.display = 'block';
+            } else {
+                showError('获取用户信息失败: ' + data.msg);
+            }
+        } catch (error) {
+            showError('请求失败: ' + error.message);
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    /**
+     * 将用户信息渲染到页面上
+     * @param {Object} user - 用户信息对象
+     */
+    function displayUserInfo(user) {
+        document.getElementById('nickname').textContent = user.nickname || '未设置昵称';
+        document.getElementById('nicknameInput').value = user.nickname || '';
+        document.getElementById('sexSelect').value = user.sex || '0';
+        document.getElementById('birthdayInput').value = user.birthday || '';
+        document.getElementById('descriptionTextarea').value = user.description || '';
+        document.getElementById('description').textContent = user.description || '暂无个人简介';
+
+        if (user.avatar) {
+            document.getElementById('avatarPreview').src = user.avatar;
+        }
+
+        if (user.lastLoginTime) {
+            document.getElementById('lastLoginTime').textContent = '最后登录: ' + new Date(user.lastLoginTime).toLocaleString();
+        }
+
+        // 显示标签
+        const tagsContainer = document.getElementById('tagsContainer');
+        tagsContainer.innerHTML = '';
+
+        if (user.tags && user.tags.length > 0) {
+            document.getElementById('tagsInput').value = user.tags.join(',');
+            user.tags.forEach(tag => {
+                if (tag.trim()) {
+                    const span = document.createElement('span');
+                    span.className = 'tag';
+                    span.textContent = tag;
+                    tagsContainer.appendChild(span);
+                }
+            });
+        }
+    }
+
+    /**
+     * 上传用户头像文件
+     * 支持图片格式验证和异步上传
+     */
+    async function uploadAvatar() {
+        const fileInput = document.getElementById('avatarInput');
+        const file = fileInput.files[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showError('请选择图片文件');
+            return;
+        }
+
+        const userId = getUserIdFromUrl();
+        const token = getAuthToken();
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch(`/api/avatar/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.code === 1) {
+                // 更新头像预览
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                showError('上传头像失败: ' + data.msg);
+            }
+        } catch (error) {
+            showError('上传失败: ' + error.message);
+        }
+    }
+
+    /**
+     * 更新用户信息
+     * 处理表单提交事件，发送PUT请求更新用户数据
+     * @param {Event} event - 表单提交事件对象
+     */
+    async function updateUserInfo(event) {
+        event.preventDefault();
+
+        const userId = getUserIdFromUrl();
+        const token = getAuthToken();
+
+        const tagsInput = document.getElementById('tagsInput').value;
+        const tags = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
+
+        const userData = {
+            nickname: document.getElementById('nicknameInput').value,
+            sex: parseInt(document.getElementById('sexSelect').value),
+            birthday: document.getElementById('birthdayInput').value,
+            description: document.getElementById('descriptionTextarea').value,
+            tags: tags
+        };
+
+        try {
+            const response = await fetch('/api/user', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+
+            const data = await response.json();
+
+            if (data.code === 1) {
+                // 更新显示的信息
+                displayUserInfo(data.data);
+                alert('用户信息更新成功！');
+            } else {
+                showError('更新用户信息失败: ' + data.msg);
+            }
+        } catch (error) {
+            showError('更新失败: ' + error.message);
+        }
+    }
+
+    // 页面加载完成后自动获取用户信息
+    document.addEventListener('DOMContentLoaded', fetchUserInfo);
+</script>
+</body>
+</html>

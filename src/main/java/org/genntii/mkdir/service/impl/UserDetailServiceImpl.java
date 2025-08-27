@@ -2,7 +2,6 @@ package org.genntii.mkdir.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.digest.BCrypt;
-import cn.hutool.jwt.Claims;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import org.genntii.mkdir.common.Exception.LoginFailedException;
@@ -96,26 +95,15 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
     public UserVO getUserMessage(Long id) {
         User user = baseMapper.selectUser(id);
 
-        UserVO userVO = new UserVO();
-        userVO.setNickname(user.getNickname());
-        userVO.setSex(user.getSex() == 1 ? "男" : "女");
-        userVO.setBirthday(user.getBirthday());
-        userVO.setDescription(user.getDescription());
-
-        List<String> tags = Arrays.stream(user.getTags().split(",")).toList();
-        userVO.setTags(tags);
-
-        userVO.setAvatar(imageFileUtil.getImgUrl(user.getAvatar()));
-
-        userVO.setLastLoginTime(user.getLastLoginTime());
-
-        return userVO;
+        return getUserVO(user);
     }
 
 
+
+
     @Override
-    public UserVO userUpdate(UserMessageUpdateParam param) {
-        User user = baseMapper.selectById(param.getId());
+    public UserVO userUpdate(UserMessageUpdateParam param, Long id) {
+        User user = baseMapper.selectById(id);
 
         if (ObjectUtil.isNotNull(param.getNickname()) && ObjectUtil.isNotEmpty(param.getNickname())) {
             user.setNickname(param.getNickname());
@@ -147,19 +135,7 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
 
         baseMapper.updateById(user);
 
-        UserVO userVO = new UserVO();
-        userVO.setNickname(user.getNickname());
-        userVO.setSex(user.getSex() == 1 ? "男" : "女");
-        userVO.setBirthday(user.getBirthday());
-        userVO.setDescription(user.getDescription());
-
-        List<String> tags = Arrays.stream(user.getTags().split(",")).toList();
-        userVO.setTags(tags);
-
-        userVO.setAvatar(user.getAvatar());
-
-        userVO.setLastLoginTime(user.getLastLoginTime());
-        return userVO;
+        return getUserVO(user);
     }
 
 
@@ -173,17 +149,61 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
         User user = baseMapper.selectById(id);
         user.setLastLoginTime(LocalDateTime.now());
         UserLoginVO userLoginVO = new UserLoginVO();
-        List<String> tags = Arrays.stream(user.getTags().split(",")).toList();
-
-        userLoginVO.setNickname(user.getNickname());
-        userLoginVO.setSex(user.getSex() == 1 ? "男" : "女");
-        userLoginVO.setBirthday(user.getBirthday());
-        userLoginVO.setAvatar(imageFileUtil.getImgUrl(user.getAvatar()));
-        userLoginVO.setTags(tags);
-        userLoginVO.setDescription(user.getDescription());
-        userLoginVO.setLocalDateTime(user.getLastLoginTime());
+        if (ObjectUtil.isNotNull(user.getTags()) && ObjectUtil.isNotEmpty(user.getTags())) {
+            List<String> tags = Arrays.stream(user.getTags().split(",")).toList();
+            userLoginVO.setTags(tags);
+        }
+        if (ObjectUtil.isNotNull(user.getNickname()) && ObjectUtil.isNotEmpty(user.getNickname())) {
+            userLoginVO.setNickname(user.getNickname());
+        }
+        if (ObjectUtil.isNotNull(user.getSex())) {
+            userLoginVO.setSex(user.getSex() == 1 ? "男" : "女");
+        }
+        if (ObjectUtil.isNotNull(user.getBirthday())) {
+            userLoginVO.setBirthday(user.getBirthday());
+        }
+        if (ObjectUtil.isNotNull(user.getAvatar()) && ObjectUtil.isNotEmpty(user.getAvatar())) {
+            userLoginVO.setAvatar(imageFileUtil.getImgUrl(user.getAvatar()));
+        }
+        if (ObjectUtil.isNotNull(user.getDescription()) && ObjectUtil.isNotEmpty(user.getDescription())) {
+            userLoginVO.setDescription(user.getDescription());
+        }
+        if (ObjectUtil.isNotNull(user.getLastLoginTime())) {
+            userLoginVO.setLocalDateTime(user.getLastLoginTime());
+        }
         userLoginVO.setToken(jwtCommonUtil.createJwt(id));
 
         return userLoginVO;
     }
+
+
+    private UserVO getUserVO(User user) {
+        UserVO userVO = new UserVO();
+        if (ObjectUtil.isNotNull(user.getNickname()) && ObjectUtil.isNotEmpty(user.getNickname())) {
+            userVO.setNickname(user.getNickname());
+        }
+        if (ObjectUtil.isNotNull(user.getSex())) {
+            userVO.setSex(user.getSex() == 1 ? "男" : "女");
+        }
+        if (ObjectUtil.isNotNull(user.getBirthday())) {
+            userVO.setBirthday(user.getBirthday());
+        }
+        if (ObjectUtil.isNotNull(user.getDescription()) && ObjectUtil.isNotEmpty(user.getDescription())) {
+            userVO.setDescription(user.getDescription());
+        }
+        if (ObjectUtil.isNotNull(user.getTags()) && ObjectUtil.isNotEmpty(user.getTags())) {
+            List<String> tags = Arrays.stream(user.getTags().split(",")).toList();
+            userVO.setTags(tags);
+        }
+        if (ObjectUtil.isNotNull(user.getAvatar()) && ObjectUtil.isNotEmpty(user.getAvatar())) {
+            userVO.setAvatar(imageFileUtil.getImgUrl(user.getAvatar()));
+        }
+        if (ObjectUtil.isNotNull(user.getLastLoginTime())) {
+            userVO.setLastLoginTime(user.getLastLoginTime());
+        }
+
+        return userVO;
+    }
+
+
 }

@@ -2,6 +2,7 @@ package org.genntii.mkdir.controller.restController;
 
 import jakarta.annotation.Resource;
 import org.genntii.mkdir.common.result.Result;
+import org.genntii.mkdir.common.util.JwtCommonUtil;
 import org.genntii.mkdir.domain.param.UserMessageUpdateParam;
 import org.genntii.mkdir.domain.vo.UserLoginVO;
 import org.genntii.mkdir.domain.vo.UserVO;
@@ -27,6 +28,9 @@ public class UserRestController {
     @Autowired
     private ImageService imageService;
 
+    @Resource
+    private JwtCommonUtil jwtCommonUtil;
+
     /**
      * 获取当前用户信息
      * 返回当前登录用户的基本信息
@@ -46,8 +50,10 @@ public class UserRestController {
      * @return 更新后的用户信息VO对象
      */
     @PutMapping("/user")
-    public Result<UserVO> updateUserMessage(@RequestParam UserMessageUpdateParam param) {
-        return Result.success(userService.userUpdate(param));
+    public Result<UserVO> updateUserMessage(@RequestBody UserMessageUpdateParam param,
+                                            @RequestHeader("Authorization") String token) {
+        Long id = jwtCommonUtil.parseJwt(token);
+        return Result.success(userService.userUpdate(param, id));
     }
 
     /**
@@ -56,16 +62,17 @@ public class UserRestController {
      * @param file 上传的头像文件
      * @return 包含更新后用户信息的结果对象
      */
-    @PostMapping("/avatar/upload/{id}")
-    public Result<UserVO> uploadAvatar(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
+    @PutMapping("/avatar/{id}")
+    public Result<UserVO> uploadAvatar(@PathVariable("id") Long id,
+                                       @RequestParam("file") MultipartFile file,
+                                       @RequestHeader("Authorization") String token) {
         // 上传图片到云存储服务并获取文件key
         String key = imageService.cosUploadImage(file);
 
         // 构造用户信息更新参数并执行更新操作
         UserMessageUpdateParam param = new UserMessageUpdateParam();
-        param.setId(id);
         param.setAvatar(key);
-        return Result.success(userService.userUpdate(param));
+        return Result.success(userService.userUpdate(param, id));
     }
 
     /**

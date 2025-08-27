@@ -20,7 +20,7 @@ public interface UserService extends IService<User> {
 
     UserVO getUserMessage(Long id);
 
-    UserVO userUpdate(UserMessageUpdateParam param);
+    UserVO userUpdate(UserMessageUpdateParam param, Long id);
 
     UserLoginVO loginByToken(String token);
 }

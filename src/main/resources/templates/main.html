@@ -65,6 +65,19 @@
             width: 100px;
             height: 100px;
         }
+
+        .login-btn {
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            transition: all 0.15s ease;
+        }
+
+        .login-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
     </style>
 </head>
 <body>
@@ -90,7 +103,8 @@
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <li class="nav-item dropdown">
+                <!-- 用户下拉菜单 (默认隐藏，有token时显示) -->
+                <li class="nav-item dropdown" id="userDropdownContainer" style="display: none;">
                     <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                         <i class="fas fa-user"></i> <span id="userNickname">用户</span>
                     </a>
@@ -100,6 +114,12 @@
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a></li>
                     </ul>
+                </li>
+                <!-- 登录按钮 (默认显示，有token时隐藏) -->
+                <li class="nav-item" id="loginButtonContainer">
+                    <a class="nav-link login-btn" href="/login" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> 登录
+                    </a>
                 </li>
             </ul>
         </div>
@@ -188,6 +208,8 @@
         const userInfoCard = document.getElementById('userInfoCard');
         const logoutBtn = document.getElementById('logoutBtn');
         const profileLink = document.getElementById('profileLink');
+        const userDropdownContainer = document.getElementById('userDropdownContainer');
+        const loginButtonContainer = document.getElementById('loginButtonContainer');
 
         // 页面加载时检查token
         checkToken();
@@ -199,6 +221,9 @@
             if (loadingSpinner) loadingSpinner.style.display = 'block';
             if (errorAlert) errorAlert.style.display = 'none';
             if (successAlert) successAlert.style.display = 'none';
+
+            // 根据token状态更新导航栏显示
+            updateNavbarByToken(!!token);
 
             if (token) {
                 // 向后端验证token有效性
@@ -229,13 +254,36 @@
                                     successAlert.style.display = 'none';
                                 }, 3000);
                             }
+                        } else {
+                            // token无效
+                            localStorage.removeItem('authToken');
+                            updateNavbarByToken(false);
+                            showError('登录已过期，请重新登录');
                         }
-                    }).finally(() => {
-                    // 隐藏加载状态
-                    if (loadingSpinner) loadingSpinner.style.display = 'none';
-                });
+                    })
+                    .catch(error => {
+                        localStorage.removeItem('authToken');
+                        updateNavbarByToken(false);
+                        showError('验证登录状态失败，请重新登录');
+                    })
+                    .finally(() => {
+                        // 隐藏加载状态
+                        if (loadingSpinner) loadingSpinner.style.display = 'none';
+                    });
             } else {
                 loadingSpinner.style.display = 'none';
+            }
+        }
+
+        function updateNavbarByToken(hasToken) {
+            if (hasToken) {
+                // 有token时显示用户下拉菜单，隐藏登录按钮
+                if (userDropdownContainer) userDropdownContainer.style.display = 'block';
+                if (loginButtonContainer) loginButtonContainer.style.display = 'none';
+            } else {
+                // 没有token时隐藏用户下拉菜单，显示登录按钮
+                if (userDropdownContainer) userDropdownContainer.style.display = 'none';
+                if (loginButtonContainer) loginButtonContainer.style.display = 'block';
             }
         }
 

@@ -58,7 +58,7 @@ public class GsonTimeConfig implements WebMvcConfigurer {
     }
 
     public static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
-        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_PATTERN);
+        private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_PATTERN);
 
         @Override
         public LocalDate deserialize(JsonElement json, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

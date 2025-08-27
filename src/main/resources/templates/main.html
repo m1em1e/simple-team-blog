@@ -53,147 +53,161 @@
             text-align: center;
             padding: 20px;
         }
+
+        .uid-text {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+        }
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-blog"></i> 博客系统
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#"><i class="fas fa-home"></i> 首页</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-user-edit"></i> 写文章</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-cog"></i> 设置</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user"></i> <span id="userNickname">用户</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i> 个人资料</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> 设置</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a></li>
-                        </ul>
-                    </li>
-                </ul>
+<!-- 导航栏 -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-blog"></i> 博客系统
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#"><i class="fas fa-home"></i> 首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-user-edit"></i> 写文章</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-cog"></i> 设置</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user"></i> <span id="userNickname">用户</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" id="profileLink"><i class="fas fa-user-circle"></i> 个人资料</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> 设置</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- 侧边栏 -->
+        <div class="col-md-3 col-lg-2 d-none d-md-block sidebar p-3">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active">
+                    <i class="fas fa-tachometer-alt"></i> 仪表盘
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-blog"></i> 我的文章
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-heart"></i> 收藏夹
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-comment"></i> 评论管理
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-users"></i> 关注者
+                </a>
             </div>
         </div>
-    </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- 侧边栏 -->
-            <div class="col-md-3 col-lg-2 d-none d-md-block sidebar p-3">
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action active">
-                        <i class="fas fa-tachometer-alt"></i> 仪表盘
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-blog"></i> 我的文章
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-heart"></i> 收藏夹
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-comment"></i> 评论管理
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action">
-                        <i class="fas fa-users"></i> 关注者
-                    </a>
+        <!-- 主内容区 -->
+        <div class="col-md-9 col-lg-10 main-content">
+            <div class="spinner-container" id="loadingSpinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">加载中...</span>
+                </div>
+                <p>正在验证登录状态...</p>
+            </div>
+
+            <div class="alert alert-danger" id="errorAlert"></div>
+            <div class="alert alert-success" id="successAlert"></div>
+
+            <!-- 用户信息卡片 -->
+            <div class="user-info-card" id="userInfoCard" style="display: none;">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        <img src="" alt="头像" class="rounded-circle" width="80" height="80" id="userAvatar">
+                    </div>
+                    <div class="col-md-10">
+                        <h4 id="userNicknameInfo">用户名</h4>
+                        <div class="uid-text">UID: <span id="userId"></span></div>
+                        <p id="userDescription">用户描述</p>
+                        <div id="userTags">
+                            <!-- 标签将在这里动态生成 -->
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar-alt"></i> 最后登录: <span id="lastLoginTime"></span>
+                            </small>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 主内容区 -->
-            <div class="col-md-9 col-lg-10 main-content">
-                <div class="spinner-container" id="loadingSpinner">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">加载中...</span>
-                    </div>
-                    <p>正在验证登录状态...</p>
+            <!-- 主要内容 -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-newspaper"></i> 最新文章</h5>
                 </div>
-
-                <div class="alert alert-danger" id="errorAlert"></div>
-                <div class="alert alert-success" id="successAlert"></div>
-
-                <!-- 用户信息卡片 -->
-                <div class="user-info-card" id="userInfoCard" style="display: none;">
-                    <div class="row">
-                        <div class="col-md-2 text-center">
-                            <img src="" alt="头像" class="rounded-circle" width="80" height="80" id="userAvatar">
-                        </div>
-                        <div class="col-md-10">
-                            <h4 id="userNicknameInfo">用户名</h4>
-                            <p id="userDescription">用户描述</p>
-                            <div id="userTags">
-                                <!-- 标签将在这里动态生成 -->
-                            </div>
-                            <div class="mt-2">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar-alt"></i> 最后登录: <span id="lastLoginTime"></span>
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 主要内容 -->
-                <div class="card">
-                    <div class="card-header">
-                        <h5><i class="fas fa-newspaper"></i> 最新文章</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>欢迎来到博客系统！这里将显示您的最新文章。</p>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-plus"></i> 写新文章
-                        </button>
-                    </div>
+                <div class="card-body">
+                    <p>欢迎来到博客系统！这里将显示您的最新文章。</p>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> 写新文章
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const errorAlert = document.getElementById('errorAlert');
-            const successAlert = document.getElementById('successAlert');
-            const userInfoCard = document.getElementById('userInfoCard');
-            const logoutBtn = document.getElementById('logoutBtn');
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorAlert = document.getElementById('errorAlert');
+        const successAlert = document.getElementById('successAlert');
+        const userInfoCard = document.getElementById('userInfoCard');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const profileLink = document.getElementById('profileLink');
 
-            // 页面加载时检查token
-            checkToken();
+        // 页面加载时检查token
+        checkToken();
 
-            function checkToken() {
-                const token = localStorage.getItem('authToken');
+        function checkToken() {
+            const token = localStorage.getItem('authToken');
 
-                // 显示加载状态
-                if (loadingSpinner) loadingSpinner.style.display = 'block';
-                if (errorAlert) errorAlert.style.display = 'none';
-                if (successAlert) successAlert.style.display = 'none';
+            // 显示加载状态
+            if (loadingSpinner) loadingSpinner.style.display = 'block';
+            if (errorAlert) errorAlert.style.display = 'none';
+            if (successAlert) successAlert.style.display = 'none';
 
-                if (token) {
-                    // 向后端验证token有效性
-                    fetch(`/api/login/${token}`, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
+            if (token) {
+                // 向后端验证token有效性
+                fetch(`/api/login/${token}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
                     .then(response => {
                         if (!response.ok) {
                             if (response.status === 401) {
@@ -227,79 +241,89 @@
                             }, 2000);
                         }
                     }).finally(() => {
-                        // 隐藏加载状态
-                        if (loadingSpinner) loadingSpinner.style.display = 'none';
-                    });
-                } else {
-                    // 没有token，跳转到登录页
+                    // 隐藏加载状态
                     if (loadingSpinner) loadingSpinner.style.display = 'none';
-                    showError('请先登录');
-                    setTimeout(() => {
-                        window.location.href = '/login';
-                    }, 2000);
-                }
-            }
-
-            function displayUserInfo(user) {
-                // 显示用户信息卡片
-                if (userInfoCard) userInfoCard.style.display = 'block';
-
-                // 填充用户信息
-                if (document.getElementById('userNickname')) {
-                    document.getElementById('userNickname').textContent = user.nickname || '用户';
-                }
-
-                if (document.getElementById('userNicknameInfo')) {
-                    document.getElementById('userNicknameInfo').textContent = user.nickname || '用户';
-                }
-
-                if (document.getElementById('userDescription')) {
-                    document.getElementById('userDescription').textContent = user.description || '暂无描述';
-                }
-
-                if (document.getElementById('userAvatar')) {
-                    document.getElementById('userAvatar').src = user.avatar || 'https://via.placeholder.com/80';
-                }
-
-                // 显示标签
-                const tagsContainer = document.getElementById('userTags');
-                if (tagsContainer && user.tags && user.tags.length > 0) {
-                    tagsContainer.innerHTML = '';
-                    user.tags.forEach(tag => {
-                        const span = document.createElement('span');
-                        span.className = 'badge bg-secondary me-1';
-                        span.textContent = tag;
-                        tagsContainer.appendChild(span);
-                    });
-                }
-
-                // 显示最后登录时间
-                if (document.getElementById('lastLoginTime')) {
-                    if (user.localDateTime) {
-                        const date = new Date(user.localDateTime);
-                        document.getElementById('lastLoginTime').textContent = date.toLocaleString();
-                    } else {
-                        document.getElementById('lastLoginTime').textContent = '未知';
-                    }
-                }
-            }
-
-            function showError(message) {
-                if (errorAlert) {
-                    errorAlert.textContent = message;
-                    errorAlert.style.display = 'block';
-                }
-            }
-
-            // 退出登录功能
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    localStorage.removeItem('authToken');
+                });
+            } else {
+                // 没有token，跳转到登录页
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+                showError('请先登录');
+                setTimeout(() => {
                     window.location.href = '/login';
+                }, 2000);
+            }
+        }
+
+        function displayUserInfo(user) {
+            // 显示用户信息卡片
+            if (userInfoCard) userInfoCard.style.display = 'block';
+
+            // 填充用户信息
+            if (document.getElementById('userNickname')) {
+                document.getElementById('userNickname').textContent = user.nickname || '用户';
+            }
+
+            if (document.getElementById('userNicknameInfo')) {
+                document.getElementById('userNicknameInfo').textContent = user.nickname || '用户';
+            }
+
+            if (document.getElementById('userDescription')) {
+                document.getElementById('userDescription').textContent = user.description || '暂无描述';
+            }
+
+            if (document.getElementById('userAvatar')) {
+                document.getElementById('userAvatar').src = user.avatar || 'https://via.placeholder.com/80';
+            }
+
+            // 显示用户ID
+            if (document.getElementById('userId') && user.id) {
+                document.getElementById('userId').textContent = user.id;
+            }
+
+            // 更新个人资料链接
+            if (profileLink && user.id) {
+                profileLink.href = `/manager/${user.id}`;
+            }
+
+            // 显示标签
+            const tagsContainer = document.getElementById('userTags');
+            if (tagsContainer && user.tags && user.tags.length > 0) {
+                tagsContainer.innerHTML = '';
+                user.tags.forEach(tag => {
+                    const span = document.createElement('span');
+                    span.className = 'badge bg-secondary me-1';
+                    span.textContent = tag;
+                    tagsContainer.appendChild(span);
                 });
             }
-        });
-    </script>
+
+            // 显示最后登录时间
+            if (document.getElementById('lastLoginTime')) {
+                if (user.localDateTime) {
+                    const date = new Date(user.localDateTime);
+                    document.getElementById('lastLoginTime').textContent = date.toLocaleString();
+                } else {
+                    document.getElementById('lastLoginTime').textContent = '未知';
+                }
+            }
+        }
+
+        function showError(message) {
+            if (errorAlert) {
+                errorAlert.textContent = message;
+                errorAlert.style.display = 'block';
+            }
+        }
+
+        // 退出登录功能
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('authToken');
+                window.location.href = '/login';
+            });
+        }
+    });
+</script>
 </body>
 </html>

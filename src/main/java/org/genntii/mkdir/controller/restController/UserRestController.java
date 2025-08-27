@@ -1,6 +1,7 @@
 package org.genntii.mkdir.controller.restController;
 
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.genntii.mkdir.common.result.Result;
 import org.genntii.mkdir.common.util.JwtCommonUtil;
 import org.genntii.mkdir.domain.param.UserMessageUpdateParam;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.baomidou.mybatisplus.extension.ddl.DdlScriptErrorHandler.PrintlnLogErrorHandler.log;
+
 /**
  * 用户信息控制器
  * 提供用户信息查询和更新功能
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author mkdir
  * @since 2025/08/22 11:40
  */
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class UserRestController {
@@ -52,6 +56,7 @@ public class UserRestController {
     @PutMapping("/user")
     public Result<UserVO> updateUserMessage(@RequestBody UserMessageUpdateParam param,
                                             @RequestHeader("Authorization") String token) {
+        log.info("修改信息");
         Long id = jwtCommonUtil.parseJwt(token);
         return Result.success(userService.userUpdate(param, id));
     }

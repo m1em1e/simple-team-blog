@@ -129,6 +129,7 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
             StringBuilder tagString = new StringBuilder();
             for (String tag : param.getTags()) {
                 tagString.append(tag);
+                tagString.append(",");
             }
             user.setTags(tagString.toString());
         }
@@ -149,6 +150,7 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
         User user = baseMapper.selectById(id);
         user.setLastLoginTime(LocalDateTime.now());
         UserLoginVO userLoginVO = new UserLoginVO();
+        userLoginVO.setId(String.valueOf(user.getId()));
         if (ObjectUtil.isNotNull(user.getTags()) && ObjectUtil.isNotEmpty(user.getTags())) {
             List<String> tags = Arrays.stream(user.getTags().split(",")).toList();
             userLoginVO.setTags(tags);
@@ -179,6 +181,7 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
 
     private UserVO getUserVO(User user) {
         UserVO userVO = new UserVO();
+        userVO.setId(String.valueOf(user.getId()));
         if (ObjectUtil.isNotNull(user.getNickname()) && ObjectUtil.isNotEmpty(user.getNickname())) {
             userVO.setNickname(user.getNickname());
         }

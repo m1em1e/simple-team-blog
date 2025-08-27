@@ -19,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserVO  implements Serializable {
+    private String id;
     private String nickname;
     private String sex;
     private LocalDate birthday;

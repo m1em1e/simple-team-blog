@@ -186,7 +186,7 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
             userVO.setNickname(user.getNickname());
         }
         if (ObjectUtil.isNotNull(user.getSex())) {
-            userVO.setSex(user.getSex() == 1 ? "男" : "女");
+            userVO.setSex(user.getSex());
         }
         if (ObjectUtil.isNotNull(user.getBirthday())) {
             userVO.setBirthday(user.getBirthday());

@@ -1,11 +1,14 @@
 package org.genntii.mkdir.controller.restController;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.db.PageResult;
 import jakarta.annotation.Resource;
 import org.genntii.mkdir.common.result.Result;
+import org.genntii.mkdir.common.util.ImageFileUtil;
 import org.genntii.mkdir.common.util.JwtCommonUtil;
 import org.genntii.mkdir.domain.entity.Article;
 import org.genntii.mkdir.domain.entity.ArticleCategory;
+import org.genntii.mkdir.domain.entity.User;
 import org.genntii.mkdir.domain.param.PageQueryParam;
 import org.genntii.mkdir.domain.vo.ArticleDetailVO;
 import org.genntii.mkdir.domain.vo.ArticleInfoVO;
@@ -15,6 +18,7 @@ import org.genntii.mkdir.service.ArticleCategoryService;
 import org.genntii.mkdir.service.ArticleService;
 import org.genntii.mkdir.service.CategoryService;
 import org.genntii.mkdir.service.impl.UserDetailServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -45,19 +49,31 @@ public class ArticleRestController {
 
     @Resource
     private UserDetailServiceImpl userService;
+    @Autowired
+    private ImageFileUtil imageFileUtil;
 
+    /**
+     * 插入、更新文章详情接口
+     * @param param 文章更新参数对象，包含封面ID、标题、内容和分类ID列表
+     * @param token 用户身份认证令牌
+     * @return 操作结果，成功返回Result.success()
+     */
     @PostMapping("/detail")
     public Result update(@RequestBody ArticleUpdateDetailParam param, @RequestHeader("Authorization") String token) {
+        // 解析JWT获取用户ID
         Long id = jwtCommonUtil.parseJwt(token);
+        // 构造文章对象并设置基本信息
         Article article = new Article();
-        article.setAuthor(userService.getById(id).getUsername());
+        article.setAuthorId(id);
         article.setCoverId(param.getCoverId());
         article.setTitle(param.getTitle());
+        // 设置文章简介，如果内容长度小于等于10则使用全部内容，否则截取前7个字符加省略号
         article.setIntroduction(param.getContent().length()<=10? param.getContent() : param.getContent().substring(0, 7) + "...");
         article.setContent(param.getContent());
         article.setStatus((byte) 1);
         articleService.save(article);
 
+        // 构造文章分类关联列表
         List<ArticleCategory> articleCategories = new ArrayList<>();
         for (Long l : param.getCategoryId()) {
             ArticleCategory articleCategory = new ArticleCategory();
@@ -65,10 +81,12 @@ public class ArticleRestController {
             articleCategory.setCategoryId(l);
             articleCategories.add(articleCategory);
         }
+        // 批量保存文章分类关联关系
         articleCategoryService.saveBatch(articleCategories);
 
         return Result.success();
     }
+
 
 
     /**
@@ -85,6 +103,10 @@ public class ArticleRestController {
 
         List<CategoryVO> categoryVOList = categoryService.getCategoryVOList(categoryIdList);
 
+        User user = userService.getById(articleDetail.getAuthorId());
+        articleDetail.setAuthorName(user.getNickname());
+        articleDetail.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
+
         articleDetail.setCategoryList(categoryVOList);
 
         return Result.success(articleDetail);
@@ -97,8 +119,19 @@ public class ArticleRestController {
      * @return 分页文章信息列表
      */
     @GetMapping("/info")
-    public Result<PageResult<ArticleInfoVO>> getPageResult(@RequestParam PageQueryParam param) {
-        return Result.success(articleService.getArticleInfoList(param));
+    public Result<PageResult<ArticleInfoVO>> getPageResult(PageQueryParam param) {
+        PageResult<ArticleInfoVO> articleInfoList = articleService.getArticleInfoList(param);
+        for (ArticleInfoVO article : articleInfoList) {
+            List<Long> categoryIdList = articleCategoryService.getCategoryListByArticleId(article.getId());
+            if (ObjectUtil.isNotEmpty(categoryIdList) && ObjectUtil.isNotNull(categoryIdList)) {
+                List<CategoryVO> categoryVOList = categoryService.getCategoryVOList(categoryIdList);
+                article.setCategoryList(categoryVOList);
+            }
+            User user = userService.getBaseMapper().selectUser(article.getAuthor());
+            article.setAuthorName(user.getNickname());
+            article.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
+        }
+        return Result.success(articleInfoList);
     }
 
     /**
@@ -110,8 +143,13 @@ public class ArticleRestController {
     @GetMapping("/category/{id}")
     public Result<List<ArticleInfoVO>> getList(@PathVariable Long id) {
         List<Long> articleIds = articleCategoryService.getArticleListByCategoryId(id);
-
-        return Result.success(articleService.getArticleInfoListById(articleIds));
+        List<ArticleInfoVO> articleInfoVOList = articleService.getArticleInfoListById(articleIds);
+        for (ArticleInfoVO article : articleInfoVOList) {
+            User user = userService.getById(article.getAuthor());
+            article.setAuthorName(user.getNickname());
+            article.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
+        }
+        return Result.success(articleInfoVOList);
     }
 
 

@@ -30,16 +30,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public List<ArticleInfoVO> getArticleInfoListById(List<Long> ids) {
         List<ArticleInfoVO> articleList = baseMapper.getArticleListById(ids);
         for (ArticleInfoVO article : articleList) {
-            if (ObjectUtil.isNull(article.getCover())) continue;
-            String coverUrl = imageFileUtil.getImgUrl(article.getCover());
-            article.setCover(coverUrl);
+            if (ObjectUtil.isNull(article.getCoverId())) continue;
+            String coverUrl = imageFileUtil.getImgUrl(article.getCoverId());
+            article.setCoverId(coverUrl);
         }
         return articleList;
     }
 
     @Override
     public PageResult<ArticleInfoVO> getArticleInfoList(PageQueryParam param) {
-        PageResult<ArticleInfoVO> articleList = baseMapper.getArticleList((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize(), param.getKeyword());
+        PageResult<ArticleInfoVO> articleList;
+        if (ObjectUtil.isNull(param.getKeyword()) || ObjectUtil.isEmpty(param.getKeyword())) {
+            articleList = baseMapper.getArticleListWithoutKeyword((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize());
+        } else {
+             articleList = baseMapper.getArticleList((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize(), param.getKeyword());
+        }
+
 
         QueryWrapper<Article> wrapper = new QueryWrapper<>();
         wrapper.like("title", param.getKeyword());
@@ -50,9 +56,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         articleList.setTotalPage(articleList.getTotal() / param.getPageSize() + 1);
 
         for (ArticleInfoVO article : articleList) {
-            if (ObjectUtil.isNull(article.getCover())) continue;
-            String coverUrl = imageFileUtil.getImgUrl(article.getCover());
-            article.setCover(coverUrl);
+            if (ObjectUtil.isNull(article.getCoverId())) continue;
+            String coverUrl = imageFileUtil.getImgUrl(article.getCoverId());
+            article.setCoverId(coverUrl);
         }
         return articleList;
     }
@@ -64,7 +70,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         ArticleDetailVO articleDetailVO = ArticleDetailVO.builder()
                 .id(article.getId())
                 .title(article.getTitle())
-                .author(article.getAuthor())
+                .authorId(article.getAuthorId())
                 .content(article.getContent())
                 .updateTime(article.getUpdateTime())
                 .build();

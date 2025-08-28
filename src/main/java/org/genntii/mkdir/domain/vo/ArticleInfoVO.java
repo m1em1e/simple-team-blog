@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  *
@@ -19,8 +20,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ArticleInfoVO {
     private Long id;
-    private String cover;
+    private Long author;
+    private String authorName;
+    private String authorAvatarUrl;
+    private String coverId;
     private String title;
     private String introduction;
+    private List<CategoryVO> categoryList;
     private LocalDateTime updateTime;
 }

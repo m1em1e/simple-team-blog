@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Article implements Serializable {
     private Long id;
-    private String author;
+    private Long authorId;
     private String coverId;
     private String title;
     private String introduction;

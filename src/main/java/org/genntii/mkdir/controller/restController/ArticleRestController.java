@@ -51,18 +51,28 @@ public class ArticleRestController {
     @Autowired
     private ImageFileUtil imageFileUtil;
 
+    /**
+     * 插入、更新文章详情接口
+     * @param param 文章更新参数对象，包含封面ID、标题、内容和分类ID列表
+     * @param token 用户身份认证令牌
+     * @return 操作结果，成功返回Result.success()
+     */
     @PostMapping("/detail")
     public Result update(@RequestBody ArticleUpdateDetailParam param, @RequestHeader("Authorization") String token) {
+        // 解析JWT获取用户ID
         Long id = jwtCommonUtil.parseJwt(token);
+        // 构造文章对象并设置基本信息
         Article article = new Article();
         article.setAuthorId(id);
         article.setCoverId(param.getCoverId());
         article.setTitle(param.getTitle());
+        // 设置文章简介，如果内容长度小于等于10则使用全部内容，否则截取前7个字符加省略号
         article.setIntroduction(param.getContent().length()<=10? param.getContent() : param.getContent().substring(0, 7) + "...");
         article.setContent(param.getContent());
         article.setStatus((byte) 1);
         articleService.save(article);
 
+        // 构造文章分类关联列表
         List<ArticleCategory> articleCategories = new ArrayList<>();
         for (Long l : param.getCategoryId()) {
             ArticleCategory articleCategory = new ArticleCategory();
@@ -70,10 +80,12 @@ public class ArticleRestController {
             articleCategory.setCategoryId(l);
             articleCategories.add(articleCategory);
         }
+        // 批量保存文章分类关联关系
         articleCategoryService.saveBatch(articleCategories);
 
         return Result.success();
     }
+
 
 
     /**

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>咩咩青羽的游戏开发小屋</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航栏 */
+        .header {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            color: #6a11cb;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff7eee 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid #6a11cb;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(106, 17, 203, 0.5);
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 60px;
+            right: 40px;
+            background: rgba(35, 35, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            z-index: 101;
+        }
+
+        .user-menu.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-menu-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-menu-item:hover {
+            background: rgba(106, 17, 203, 0.2);
+        }
+
+        .user-menu-item i {
+            color: #8a2be2;
+            width: 20px;
+        }
+
+        /* 内容区域 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .main-container {
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+
+        .content {
+            position: absolute;
+            width: 300px;
+            background: linear-gradient(145deg, #23233a, #1c1c2e);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-box {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .content:hover .image {
+            transform: scale(1.05);
+        }
+
+        .category-tags {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        .category-tag {
+            background: linear-gradient(90deg, #ff7eee 0%, #8a2be2 100%);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .category-tag.more {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .content-container {
+            padding: 20px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            margin-right: 15px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #6a11cb;
+            z-index: 2;
+            position: relative;
+        }
+
+        .avatar-background {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .nickname {
+            font-weight: 600;
+            color: #d4d4dc;
+            font-size: 0.95rem;
+        }
+
+        .post-time {
+            color: #63637a;
+            font-size: 0.75rem;
+            margin-top: 3px;
+        }
+
+        .title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: #ffffff;
+        }
+
+        .description {
+            color: #a0a0b8;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #a0a0b8;
+            font-size: 1.1rem;
+        }
+
+        .loading i {
+            margin-right: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .logo-text {
+                font-size: 18px;
+            }
+
+            .user-menu {
+                right: 20px;
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<header class="header">
+    <a href="/" class="logo">
+        <i class="fas fa-blog logo-icon"></i>
+        <div class="logo-text">咩咩青羽的游戏开发小屋</div>
+    </a>
+    <div class="user-section" id="userSection">
+        <button class="login-btn" id="loginBtn" style="display: none;">
+            <i class="fas fa-sign-in-alt"></i> 登录
+        </button>
+    </div>
+
+    <!-- 用户菜单 -->
+    <div class="user-menu" id="userMenu">
+        <div class="user-menu-item">
+            <i class="fas fa-user-circle"></i>
+            <span>用户信息</span>
+        </div>
+        <div class="user-menu-item">
+            <i class="fas fa-cog"></i>
+            <span>账号设置</span>
+        </div>
+        <div class="user-menu-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>退出登录</span>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="main-container" id="mainContainer">
+        <!-- 内容将由JavaScript动态生成 -->
+    </div>
+</div>
+
+<script>
+    // 配置常量
+    const CONTENT_WIDTH = 300;
+    const MINIMUM_SPACE = 15;
+    const CONTAINER_TOP_SPACE = 20;
+    const ANTI_SHAKE_TIME = 200;
+
+    // DOM元素
+    const mainContainer = document.getElementById('mainContainer');
+    const loginBtn = document.getElementById('loginBtn');
+    const userAvatar = document.getElementById('userAvatar');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userSection = document.getElementById('userSection')
+
+    // 状态变量
+    let currentPage = 1;
+    let pageSize = 10;
+    let isLoading = false;
+    let hasMore = true;
+    let authToken = localStorage.getItem('authToken');
+
+    // 初始化
+    function init() {
+        checkAuthStatus();
+        loadArticles();
+        setupEventListeners();
+    }
+    // 检查认证状态
+    function checkAuthStatus() {
+        if (authToken) {
+            // 有token，尝试验证
+            verifyToken();
+        } else {
+            // 无token，显示登录按钮
+            showLoginButton();
+        }
+    }
+    // 验证token有效性
+    function verifyToken() {
+        axios.get(`/api/login/${authToken}`)
+            .then(response => {
+                if (response.data.code === 1) {
+                    localStorage.setItem('authToken', response.data.data.token)
+                    showUserAvatar(true, response.data.data.avatar);
+                } else {
+                    localStorage.removeItem('authToken');
+                    authToken = null;
+                    showLoginButton();
+                }
+            })
+    }
+    // 显示登录按钮
+    function showLoginButton() {
+        loginBtn.style.display = 'block';
+        if (userAvatar) userAvatar.style.display = 'none';
+    }
+    // 显示用户头像
+    function showUserAvatar(bool, url) {
+        loginBtn.style.display = 'none';
+        if (bool) {
+            let html = '<img src="'+url+'" class="user-avatar" id="userAvatar" alt="用户头像">'
+            userSection.insertAdjacentHTML('beforeend', html)
+        }
+
+    }
+    // 设置事件监听
+    function setupEventListeners() {
+        // 登录按钮点击
+        if (loginBtn) {
+            loginBtn.addEventListener('click', handleLogin);
+        }
+
+        // 用户头像点击
+        if (userAvatar) {
+            userAvatar.addEventListener('click', toggleUserMenu);
+        }
+
+        // 退出登录
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+
+        // 滚动加载
+        window.addEventListener('scroll', handleScroll);
+
+        // 点击其他地方关闭用户菜单
+        document.addEventListener('click', (e) => {
+            if (userAvatar && !userAvatar.contains(e.target) && userMenu && !userMenu.contains(e.target)) {
+                userMenu.classList.remove('active');
+            }
+        });
+    }
+    // 处理登录
+    function handleLogin() {
+        window.location.href = "/login";
+    }
+
+    // 切换用户菜单显示
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        userMenu.classList.toggle('active');
+    }
+
+    // 处理退出登录
+    function handleLogout() {
+        localStorage.removeItem('authToken')
+        window.location.reload()
+    }
+
+    // 处理滚动加载
+    function handleScroll() {
+        if (isLoading || !hasMore) return;
+
+        const scrollTop = document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        if (scrollTop + windowHeight >= documentHeight - 100) {
+            loadArticles();
+        }
+    }
+
+    // 加载文章
+    function loadArticles() {
+        if (isLoading) return;
+
+        isLoading = true;
+        showLoading();
+
+        // 发起API请求获取文章列表
+        axios.get(`/api/article/info`, {
+            params: {
+                pageIndex: currentPage,
+                pageSize: pageSize,
+                keyword: '' // 如果需要关键字搜索也可以加上
+            }
+        })
+            .then(response => {
+                if (response.data.code === 1) {
+                    renderArticles(response.data.data);
+                    currentPage++;
+                    // 判断是否还有更多数据
+                    if (response.data.data.length < pageSize) {
+                        hasMore = false;
+                    }
+                } else {
+                    console.error("加载文章失败: ", response.data.msg);
+                }
+                isLoading = false;
+                hideLoading();
+            })
+            .catch(error => {
+                console.error("API调用错误: ", error);
+                isLoading = false;
+                hideLoading();
+                currentPage++;
+
+                // 模拟没有更多数据的情况
+                if (currentPage > 3) {
+                    hasMore = false;
+                }
+            });
+    }
+
+
+    // 渲染文章
+    function renderArticles(articles) {
+        let contentHTML = '';
+
+        // 生成有效的6位十六进制颜色代码
+        function generateValidColor() {
+            const color = Math.floor(Math.random() * 16777215).toString(16);
+            return '#' + ('000000' + color).slice(-6); // 确保总是6位
+        }
+
+        articles.forEach(article => {
+            const color1 = generateValidColor();
+            const color2 = generateValidColor();
+
+            // 处理分类标签显示
+            let categoryTagsHTML = '';
+            if (article.categoryList && article.categoryList.length > 0) {
+                const maxDisplay = 2; // 最多显示2个标签
+                const displayCategories = article.categoryList.slice(0, maxDisplay);
+                const remainingCount = article.categoryList.length - maxDisplay;
+
+                displayCategories.forEach(category => {
+                    categoryTagsHTML += `<div class="category-tag">${category.categoryName}</div>`;
+                });
+
+                if (remainingCount > 0) {
+                    categoryTagsHTML += `<div class="category-tag more">+${remainingCount}</div>`;
+                }
+            }
+
+            contentHTML += `
+        <div class="content" data-id="${article.id}" style="--color1: ${color1}; --color2: ${color2}">
+            <div class="image-box">
+                <div class="image" style="background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold;">
+                    <img src="${article.coverId}" style="max-width: 100%; height: auto;" alt="${article.title}">
+                </div>
+                <div class="category-tags">
+                    ${categoryTagsHTML}
+                </div>
+            </div>
+            <div class="content-container">
+                <div class="profile">
+                    <div class="avatar-container">
+                        <div class="avatar" style="background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white;">
+                            <img src="${article.authorAvatarUrl}" style="max-width: 100%; height: auto; border-radius: 50%;" alt="${article.authorName}">
+                        </div>
+                        <div class="avatar-background"></div>
+                    </div>
+                    <div>
+                        <div class="nickname">${article.authorName}</div>
+                        <div class="post-time">${article.updateTime}</div>
+                    </div>
+                </div>
+                <div class="title">${article.title}</div>
+                <div class="description">${article.introduction}</div>
+            </div>
+        </div>
+    `;
+        });
+
+        mainContainer.insertAdjacentHTML('beforeend', contentHTML);
+
+        // 添加点击事件
+        document.querySelectorAll('.content').forEach(content => {
+            content.addEventListener('click', () => {
+                const articleId = content.getAttribute('data-id');
+                window.location.href = `/detail/${articleId}`;
+            });
+        });
+
+        // 重新计算布局
+        setWaterfallPositions();
+    }
+
+    // 显示加载中
+    function showLoading() {
+        const loadingEl = document.getElementById('loading');
+        if (!loadingEl) {
+            const loadingHTML = `<div class="loading" id="loading"><i class="fas fa-spinner"></i>加载更多内容...</div>`;
+            mainContainer.insertAdjacentHTML('beforeend', loadingHTML);
+        }
+    }
+
+    // 隐藏加载中
+    function hideLoading() {
+        const loadingEl = document.getElementById('loading');
+        if (loadingEl) {
+            loadingEl.remove();
+        }
+    }
+
+    // 计算列数
+    function calculateColumns() {
+        const containerWidth = mainContainer.clientWidth;
+        let columns = Math.floor(containerWidth / CONTENT_WIDTH);
+        let space = (containerWidth - columns * CONTENT_WIDTH) / (columns + 1);
+
+        if (space < MINIMUM_SPACE) {
+            columns -= 1;
+            space = (containerWidth - columns * CONTENT_WIDTH) / (columns + 1);
+        }
+
+        return {
+            columns: columns,
+            space: space
+        };
+    }
+
+    // 设置瀑布流位置
+    function setWaterfallPositions() {
+        const {columns, space} = calculateColumns();
+        const topCoordinateArr = new Array(columns).fill(CONTAINER_TOP_SPACE);
+
+        for(let i = 0; i < mainContainer.children.length; i++) {
+            const content = mainContainer.children[i];
+            if (content.id === 'loading') continue;
+
+            const minTopCoordinate = Math.min(...topCoordinateArr);
+            content.style.top = minTopCoordinate + 'px';
+
+            const arrIndex = topCoordinateArr.indexOf(minTopCoordinate);
+            topCoordinateArr[arrIndex] += content.clientHeight + space;
+
+            const leftCoordinate = (arrIndex + 1) * space + arrIndex * CONTENT_WIDTH;
+            content.style.left = leftCoordinate + 'px';
+        }
+
+        const maxHeight = Math.max(...topCoordinateArr);
+        mainContainer.style.height = maxHeight + 'px';
+    }
+
+    // 页面加载完成后初始化
+    window.onload = () => {
+        init();
+
+        // 防抖resize事件
+        let timer = null;
+        window.addEventListener('resize', () => {
+            if(timer) clearTimeout(timer);
+            timer = setTimeout(setWaterfallPositions, ANTI_SHAKE_TIME);
+        });
+    };
+</script>
+</body>
+</html>

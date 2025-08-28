@@ -59,8 +59,8 @@ public class ImageRestController {
     @PostMapping("/cos/upload")
     public Result<String> uploadFile(@RequestParam("file") MultipartFile file) {
         String key = imageService.cosUploadImage(file);
-        String url = imageService.getFileUrl(key);
-        return Result.success(url);
+
+        return Result.success(key);
     }
 
     /**

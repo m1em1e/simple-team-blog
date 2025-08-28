@@ -16,7 +16,7 @@ create table if not exists `user` (
 );
 create table if not exists `article` (
     id bigint primary key comment '主键id',
-    author varchar(255) not null comment '作者',
+    author bigint not null comment '作者id',
     cover_id varchar(255) not null comment '封面id',
     title varchar(255) not null comment '标题',
     introduction varchar(255) not null comment '介绍',

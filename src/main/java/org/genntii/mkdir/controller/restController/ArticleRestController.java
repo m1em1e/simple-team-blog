@@ -1,5 +1,6 @@
 package org.genntii.mkdir.controller.restController;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.db.PageResult;
 import jakarta.annotation.Resource;
 import org.genntii.mkdir.common.result.Result;
@@ -118,13 +119,15 @@ public class ArticleRestController {
      * @return 分页文章信息列表
      */
     @GetMapping("/info")
-    public Result<PageResult<ArticleInfoVO>> getPageResult(@RequestParam PageQueryParam param) {
+    public Result<PageResult<ArticleInfoVO>> getPageResult(PageQueryParam param) {
         PageResult<ArticleInfoVO> articleInfoList = articleService.getArticleInfoList(param);
         for (ArticleInfoVO article : articleInfoList) {
             List<Long> categoryIdList = articleCategoryService.getCategoryListByArticleId(article.getId());
-            List<CategoryVO> categoryVOList = categoryService.getCategoryVOList(categoryIdList);
-            article.setCategoryList(categoryVOList);
-            User user = userService.getById(article.getAuthorId());
+            if (ObjectUtil.isNotEmpty(categoryIdList) && ObjectUtil.isNotNull(categoryIdList)) {
+                List<CategoryVO> categoryVOList = categoryService.getCategoryVOList(categoryIdList);
+                article.setCategoryList(categoryVOList);
+            }
+            User user = userService.getBaseMapper().selectUser(article.getAuthor());
             article.setAuthorName(user.getNickname());
             article.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
         }
@@ -142,7 +145,7 @@ public class ArticleRestController {
         List<Long> articleIds = articleCategoryService.getArticleListByCategoryId(id);
         List<ArticleInfoVO> articleInfoVOList = articleService.getArticleInfoListById(articleIds);
         for (ArticleInfoVO article : articleInfoVOList) {
-            User user = userService.getById(article.getAuthorId());
+            User user = userService.getById(article.getAuthor());
             article.setAuthorName(user.getNickname());
             article.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
         }

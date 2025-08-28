@@ -20,10 +20,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ArticleInfoVO {
     private Long id;
-    private Long authorId;
+    private Long author;
     private String authorName;
     private String authorAvatarUrl;
-    private String cover;
+    private String coverId;
     private String title;
     private String introduction;
     private List<CategoryVO> categoryList;

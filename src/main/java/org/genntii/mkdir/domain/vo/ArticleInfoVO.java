@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  *
@@ -25,5 +26,6 @@ public class ArticleInfoVO {
     private String cover;
     private String title;
     private String introduction;
+    private List<CategoryVO> categoryList;
     private LocalDateTime updateTime;
 }

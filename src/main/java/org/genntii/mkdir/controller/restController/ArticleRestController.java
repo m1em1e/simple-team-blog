@@ -121,6 +121,9 @@ public class ArticleRestController {
     public Result<PageResult<ArticleInfoVO>> getPageResult(@RequestParam PageQueryParam param) {
         PageResult<ArticleInfoVO> articleInfoList = articleService.getArticleInfoList(param);
         for (ArticleInfoVO article : articleInfoList) {
+            List<Long> categoryIdList = articleCategoryService.getCategoryListByArticleId(article.getId());
+            List<CategoryVO> categoryVOList = categoryService.getCategoryVOList(categoryIdList);
+            article.setCategoryList(categoryVOList);
             User user = userService.getById(article.getAuthorId());
             article.setAuthorName(user.getNickname());
             article.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));

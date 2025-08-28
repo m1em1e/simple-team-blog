@@ -361,10 +361,11 @@
     // DOM元素
     const mainContainer = document.getElementById('mainContainer');
     const loginBtn = document.getElementById('loginBtn');
-    const userAvatar = document.getElementById('userAvatar');
     const userMenu = document.getElementById('userMenu');
     const logoutBtn = document.getElementById('logoutBtn');
     const userSection = document.getElementById('userSection')
+
+    let userAvatar = document.getElementById('userAvatar');
 
     // 状态变量
     let currentPage = 1;
@@ -414,6 +415,7 @@
         if (bool) {
             let html = '<img src="'+url+'" class="user-avatar" id="userAvatar" alt="用户头像">'
             userSection.insertAdjacentHTML('beforeend', html)
+            userAvatar = document.getElementById('userAvatar');
         }
 
     }
@@ -427,6 +429,7 @@
         // 用户头像点击
         if (userAvatar) {
             userAvatar.addEventListener('click', toggleUserMenu);
+            console.log("点击头像")
         }
 
         // 退出登录
@@ -508,11 +511,6 @@
                 isLoading = false;
                 hideLoading();
                 currentPage++;
-
-                // 模拟没有更多数据的情况
-                if (currentPage > 3) {
-                    hasMore = false;
-                }
             });
     }
 

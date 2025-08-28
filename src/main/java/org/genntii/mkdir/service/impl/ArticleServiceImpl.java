@@ -64,7 +64,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         ArticleDetailVO articleDetailVO = ArticleDetailVO.builder()
                 .id(article.getId())
                 .title(article.getTitle())
-                .author(article.getAuthor())
+                .authorId(article.getAuthorId())
                 .content(article.getContent())
                 .updateTime(article.getUpdateTime())
                 .build();

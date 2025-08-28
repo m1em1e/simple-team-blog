@@ -19,6 +19,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ArticleInfoVO {
     private Long id;
+    private Long authorId;
+    private String authorName;
+    private String authorAvatarUrl;
     private String cover;
     private String title;
     private String introduction;

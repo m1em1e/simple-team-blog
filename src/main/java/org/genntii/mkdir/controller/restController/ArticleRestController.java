@@ -3,9 +3,11 @@ package org.genntii.mkdir.controller.restController;
 import cn.hutool.db.PageResult;
 import jakarta.annotation.Resource;
 import org.genntii.mkdir.common.result.Result;
+import org.genntii.mkdir.common.util.ImageFileUtil;
 import org.genntii.mkdir.common.util.JwtCommonUtil;
 import org.genntii.mkdir.domain.entity.Article;
 import org.genntii.mkdir.domain.entity.ArticleCategory;
+import org.genntii.mkdir.domain.entity.User;
 import org.genntii.mkdir.domain.param.PageQueryParam;
 import org.genntii.mkdir.domain.vo.ArticleDetailVO;
 import org.genntii.mkdir.domain.vo.ArticleInfoVO;
@@ -15,6 +17,7 @@ import org.genntii.mkdir.service.ArticleCategoryService;
 import org.genntii.mkdir.service.ArticleService;
 import org.genntii.mkdir.service.CategoryService;
 import org.genntii.mkdir.service.impl.UserDetailServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -45,12 +48,14 @@ public class ArticleRestController {
 
     @Resource
     private UserDetailServiceImpl userService;
+    @Autowired
+    private ImageFileUtil imageFileUtil;
 
     @PostMapping("/detail")
     public Result update(@RequestBody ArticleUpdateDetailParam param, @RequestHeader("Authorization") String token) {
         Long id = jwtCommonUtil.parseJwt(token);
         Article article = new Article();
-        article.setAuthor(userService.getById(id).getUsername());
+        article.setAuthorId(id);
         article.setCoverId(param.getCoverId());
         article.setTitle(param.getTitle());
         article.setIntroduction(param.getContent().length()<=10? param.getContent() : param.getContent().substring(0, 7) + "...");
@@ -85,6 +90,10 @@ public class ArticleRestController {
 
         List<CategoryVO> categoryVOList = categoryService.getCategoryVOList(categoryIdList);
 
+        User user = userService.getById(articleDetail.getAuthorId());
+        articleDetail.setAuthorName(user.getNickname());
+        articleDetail.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
+
         articleDetail.setCategoryList(categoryVOList);
 
         return Result.success(articleDetail);
@@ -98,7 +107,13 @@ public class ArticleRestController {
      */
     @GetMapping("/info")
     public Result<PageResult<ArticleInfoVO>> getPageResult(@RequestParam PageQueryParam param) {
-        return Result.success(articleService.getArticleInfoList(param));
+        PageResult<ArticleInfoVO> articleInfoList = articleService.getArticleInfoList(param);
+        for (ArticleInfoVO article : articleInfoList) {
+            User user = userService.getById(article.getAuthorId());
+            article.setAuthorName(user.getNickname());
+            article.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
+        }
+        return Result.success(articleInfoList);
     }
 
     /**
@@ -110,8 +125,13 @@ public class ArticleRestController {
     @GetMapping("/category/{id}")
     public Result<List<ArticleInfoVO>> getList(@PathVariable Long id) {
         List<Long> articleIds = articleCategoryService.getArticleListByCategoryId(id);
-
-        return Result.success(articleService.getArticleInfoListById(articleIds));
+        List<ArticleInfoVO> articleInfoVOList = articleService.getArticleInfoListById(articleIds);
+        for (ArticleInfoVO article : articleInfoVOList) {
+            User user = userService.getById(article.getAuthorId());
+            article.setAuthorName(user.getNickname());
+            article.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
+        }
+        return Result.success(articleInfoVOList);
     }
 
 

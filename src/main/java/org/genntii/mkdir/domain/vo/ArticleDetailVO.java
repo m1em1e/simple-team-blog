@@ -21,7 +21,9 @@ import java.util.List;
 public class ArticleDetailVO {
     private Long id;
     private String title;
-    private String author;
+    private Long authorId;
+    private String authorAvatarUrl;
+    private String authorName;
     private String cover;
     private String content;
     private LocalDateTime updateTime;

@@ -3,15 +3,21 @@ package org.genntii.mkdir.controller.restController;
 import cn.hutool.db.PageResult;
 import jakarta.annotation.Resource;
 import org.genntii.mkdir.common.result.Result;
+import org.genntii.mkdir.common.util.JwtCommonUtil;
+import org.genntii.mkdir.domain.entity.Article;
+import org.genntii.mkdir.domain.entity.ArticleCategory;
 import org.genntii.mkdir.domain.param.PageQueryParam;
 import org.genntii.mkdir.domain.vo.ArticleDetailVO;
 import org.genntii.mkdir.domain.vo.ArticleInfoVO;
+import org.genntii.mkdir.domain.vo.ArticleUpdateDetailParam;
 import org.genntii.mkdir.domain.vo.CategoryVO;
 import org.genntii.mkdir.service.ArticleCategoryService;
 import org.genntii.mkdir.service.ArticleService;
 import org.genntii.mkdir.service.CategoryService;
+import org.genntii.mkdir.service.impl.UserDetailServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +39,37 @@ public class ArticleRestController {
 
     @Resource
     private ArticleCategoryService articleCategoryService;
+
+    @Resource
+    private JwtCommonUtil jwtCommonUtil;
+
+    @Resource
+    private UserDetailServiceImpl userService;
+
+    @PostMapping("/detail")
+    public Result update(@RequestBody ArticleUpdateDetailParam param, @RequestHeader("Authorization") String token) {
+        Long id = jwtCommonUtil.parseJwt(token);
+        Article article = new Article();
+        article.setAuthor(userService.getById(id).getUsername());
+        article.setCoverId(param.getCoverId());
+        article.setTitle(param.getTitle());
+        article.setIntroduction(param.getContent().length()<=10? param.getContent() : param.getContent().substring(0, 7) + "...");
+        article.setContent(param.getContent());
+        article.setStatus((byte) 1);
+        articleService.save(article);
+
+        List<ArticleCategory> articleCategories = new ArrayList<>();
+        for (Long l : param.getCategoryId()) {
+            ArticleCategory articleCategory = new ArticleCategory();
+            articleCategory.setArticleId(article.getId());
+            articleCategory.setCategoryId(l);
+            articleCategories.add(articleCategory);
+        }
+        articleCategoryService.saveBatch(articleCategories);
+
+        return Result.success();
+    }
+
 
     /**
      * 获取文章详情

@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    active: dev
+    active: prod
   datasource:
     url: jdbc:mysql://${mkdir.db.host}:${mkdir.db.port}/${mkdir.db.database}
     username: ${mkdir.db.username}

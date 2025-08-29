@@ -10,9 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface ImageService extends IService<Image> {
 
-    Image storeImage(MultipartFile file);
-
-    Image getImage(Long id);
 
     String cosUploadImage(MultipartFile file);
 

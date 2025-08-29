@@ -326,6 +326,7 @@
         <button class="login-btn" id="loginBtn" style="display: none;">
             <i class="fas fa-sign-in-alt"></i> 登录
         </button>
+        <img th:src="${url}" class="user-avatar" id="userAvatar" alt="用户头像">
     </div>
 
     <!-- 用户菜单 -->
@@ -396,7 +397,7 @@
             .then(response => {
                 if (response.data.code === 1) {
                     localStorage.setItem('authToken', response.data.data.token)
-                    showUserAvatar(true, response.data.data.avatar);
+                    showUserAvatar(response.data.data.avatar);
                 } else {
                     localStorage.removeItem('authToken');
                     authToken = null;
@@ -410,13 +411,10 @@
         if (userAvatar) userAvatar.style.display = 'none';
     }
     // 显示用户头像
-    function showUserAvatar(bool, url) {
+    function showUserAvatar(avatarUrl) {
         loginBtn.style.display = 'none';
-        if (bool) {
-            let html = '<img src="'+url+'" class="user-avatar" id="userAvatar" alt="用户头像">'
-            userSection.insertAdjacentHTML('beforeend', html)
-            userAvatar = document.getElementById('userAvatar');
-        }
+        if (userAvatar) userAvatar.style.display = 'block'
+        userAvatar.src = avatarUrl
 
     }
     // 设置事件监听
@@ -548,7 +546,7 @@
             contentHTML += `
         <div class="content" data-id="${article.id}" style="--color1: ${color1}; --color2: ${color2}">
             <div class="image-box">
-                <div class="image" style="background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold;">
+                <div class="image" style="height: ${article.coverHeight}; background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold;">
                     <img src="${article.coverId}" style="max-width: 100%; height: auto;" alt="${article.title}">
                 </div>
                 <div class="category-tags">

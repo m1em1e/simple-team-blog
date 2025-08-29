@@ -11,6 +11,7 @@ import org.genntii.mkdir.domain.param.PageQueryParam;
 import org.genntii.mkdir.domain.vo.ArticleDetailVO;
 import org.genntii.mkdir.domain.vo.ArticleInfoVO;
 import org.genntii.mkdir.mapper.ArticleMapper;
+import org.genntii.mkdir.mapper.ImageMapper;
 import org.genntii.mkdir.service.ArticleService;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Resource
     private ImageFileUtil imageFileUtil;
+
+    @Resource
+    private ImageMapper imageMapper;
 
     @Override
     public List<ArticleInfoVO> getArticleInfoListById(List<Long> ids) {
@@ -56,6 +60,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         articleList.setTotalPage(articleList.getTotal() / param.getPageSize() + 1);
 
         for (ArticleInfoVO article : articleList) {
+            int height = imageMapper.geyHeightByKey(article.getCoverId());
+            article.setCoverHeight(height);
+
             if (ObjectUtil.isNull(article.getCoverId())) continue;
             String coverUrl = imageFileUtil.getImgUrl(article.getCoverId());
             article.setCoverId(coverUrl);

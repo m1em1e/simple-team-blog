@@ -24,6 +24,7 @@ public class ArticleInfoVO {
     private String authorName;
     private String authorAvatarUrl;
     private String coverId;
+    private Integer coverHeight;
     private String title;
     private String introduction;
     private List<CategoryVO> categoryList;

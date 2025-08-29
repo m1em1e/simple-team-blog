@@ -40,7 +40,7 @@ create table if not exists `article_category` (
 );
 create table if not exists `image` (
     id bigint primary key comment '主键id',
-    name varchar(255) not null comment '名称',
-    `type` varchar(64) not null comment '类型',
-    data mediumblob not null comment '数据'
+    height bigint not null comment '图片高度',
+    `key` varchar(255) not null comment '图片key',
+    `type` varchar(64) not null comment '类型'
 )

@@ -28,7 +28,7 @@ public class Article implements Serializable {
     /**
      * 作者用户ID，关联用户表
      */
-    private Long authorId;
+    private Long author;
 
     /**
      * 封面图片ID，关联文件表

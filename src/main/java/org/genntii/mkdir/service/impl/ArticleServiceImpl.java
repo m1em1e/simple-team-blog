@@ -78,7 +78,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             articleList = baseMapper.getArticleListWithoutKeyword((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize());
         } else {
             // 有关键字查询
-             articleList = baseMapper.getArticleList((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize(), param.getKeyword());
+            articleList = baseMapper.getArticleList((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize(), param.getKeyword());
         }
 
         // 构建查询条件用于统计总数
@@ -122,7 +122,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         ArticleDetailVO articleDetailVO = ArticleDetailVO.builder()
                 .id(article.getId())
                 .title(article.getTitle())
-                .authorId(article.getAuthorId())
+                .author(article.getAuthor())
                 .content(article.getContent())
                 .updateTime(article.getUpdateTime())
                 .build();

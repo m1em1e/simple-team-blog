@@ -2,16 +2,15 @@ package org.genntii.mkdir.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import jakarta.annotation.Resource;
 import org.genntii.mkdir.domain.entity.Category;
 import org.genntii.mkdir.domain.param.CategorySaveParam;
 import org.genntii.mkdir.domain.vo.Category4bVO;
 import org.genntii.mkdir.domain.vo.CategoryVO;
-import org.genntii.mkdir.mapper.ArticleCategoryMapper;
 import org.genntii.mkdir.mapper.CategoryMapper;
 import org.genntii.mkdir.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -75,6 +74,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
      */
     @Override
     public List<CategoryVO> getCategoryVOList(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
         return baseMapper.getCategoryVOList(ids);
     }
 

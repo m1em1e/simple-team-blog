@@ -90,11 +90,11 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
     /**
      * 用户登录验证功能
      *
-     * @param username 用户名
+     * @param username          用户名
      * @param unhandledPassword 未处理的原始密码
      * @return 验证成功返回true
      * @throws UsernameNotFoundException 当用户名不存在时抛出异常
-     * @throws LoginFailedException 当密码错误时抛出异常
+     * @throws LoginFailedException      当密码错误时抛出异常
      */
     @Override
     public boolean login(String username, String unhandledPassword) {
@@ -156,7 +156,7 @@ public class UserDetailServiceImpl extends ServiceImpl<UserMapper, User> impleme
      * 更新用户信息
      *
      * @param param 用户信息更新参数
-     * @param id 用户ID
+     * @param id    用户ID
      * @return 更新后的用户信息展示对象
      */
     @Override

@@ -64,7 +64,7 @@ public class ArticleRestController {
         Long id = jwtCommonUtil.parseJwt(token);
         // 构造文章对象并设置基本信息
         Article article = new Article();
-        article.setAuthorId(id);
+        article.setAuthor(id);
         article.setCoverId(param.getCoverId());
         article.setTitle(param.getTitle());
         // 设置文章简介，如果内容长度小于等于10则使用全部内容，否则截取前7个字符加省略号
@@ -96,14 +96,14 @@ public class ArticleRestController {
      * @return 文章详情信息
      */
     @GetMapping("/detail/{id}")
-    public Result<ArticleDetailVO> getArticleDetail(@PathVariable Long id) {
+    public Result<ArticleDetailVO> getArticleDetail(@PathVariable("id") Long id) {
         ArticleDetailVO articleDetail = articleService.getArticleDetail(id);
 
         List<Long> categoryIdList = articleCategoryService.getCategoryListByArticleId(articleDetail.getId());
 
         List<CategoryVO> categoryVOList = categoryService.getCategoryVOList(categoryIdList);
 
-        User user = userService.getById(articleDetail.getAuthorId());
+        User user = userService.getById(articleDetail.getAuthor());
         articleDetail.setAuthorName(user.getNickname());
         articleDetail.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
 

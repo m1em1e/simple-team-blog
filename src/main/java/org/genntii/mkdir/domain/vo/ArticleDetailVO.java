@@ -33,7 +33,7 @@ public class ArticleDetailVO {
     /**
      * 作者用户ID
      */
-    private Long authorId;
+    private Long author;
 
     /**
      * 作者头像URL地址

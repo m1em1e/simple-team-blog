@@ -1,7 +1,6 @@
 package org.genntii.mkdir.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import jakarta.annotation.Resource;
 import org.genntii.mkdir.domain.entity.ArticleCategory;
 import org.genntii.mkdir.mapper.ArticleCategoryMapper;
 import org.genntii.mkdir.service.ArticleCategoryService;

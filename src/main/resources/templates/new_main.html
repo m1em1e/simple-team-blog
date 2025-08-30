@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>咩咩青羽的游戏开发小屋</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         * {
             padding: 0;
@@ -546,7 +546,7 @@
             contentHTML += `
         <div class="content" data-id="${article.id}" style="--color1: ${color1}; --color2: ${color2}">
             <div class="image-box">
-                <div class="image" style="height: ${article.coverHeight}; background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold;">
+                <div class="image" style="minheight: ${article.coverHeight}; background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold;">
                     <img src="${article.coverId}" style="max-width: 100%; height: auto;" alt="${article.title}">
                 </div>
                 <div class="category-tags">

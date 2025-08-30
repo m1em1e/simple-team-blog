@@ -23,33 +23,6 @@ public class ImageRestController {
     private ImageService imageService;
 
     /**
-     * 上传头像图片
-     * 将图片文件存储到本地或服务器
-     *
-     * @param file 上传的图片文件
-     * @return 上传结果信息
-     */
-    @PostMapping("/upload")
-    public Result<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
-        imageService.storeImage(file);
-        return Result.success("文件上传成功");
-    }
-
-    /**
-     * 根据ID获取图片数据
-     * 返回图片的二进制数据
-     *
-     * @param id 图片ID
-     * @return 图片二进制数据
-     */
-    @GetMapping("/{id}")
-    public Result<byte[]> getImage(@PathVariable Long id) {
-        Image image = imageService.getImage(id);
-
-        return Result.success(image.getData());
-    }
-
-    /**
      * 上传文件到云存储服务
      * 将文件上传到COS并返回访问URL
      *

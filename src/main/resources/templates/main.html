@@ -105,14 +105,19 @@
             <ul class="navbar-nav">
                 <!-- 用户下拉菜单 (默认隐藏，有token时显示) -->
                 <li class="nav-item dropdown" id="userDropdownContainer" style="display: none;">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                       data-bs-toggle="dropdown">
                         <i class="fas fa-user"></i> <span id="userNickname">用户</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#" id="profileLink"><i class="fas fa-user-circle"></i> 个人资料</a></li>
+                        <li><a class="dropdown-item" href="#" id="profileLink"><i class="fas fa-user-circle"></i> 个人资料</a>
+                        </li>
                         <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> 设置</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> 退出登录</a>
+                        </li>
                     </ul>
                 </li>
                 <!-- 登录按钮 (默认显示，有token时隐藏) -->
@@ -201,7 +206,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const loadingSpinner = document.getElementById('loadingSpinner');
         const errorAlert = document.getElementById('errorAlert');
         const successAlert = document.getElementById('successAlert');
@@ -350,7 +355,7 @@
 
         // 退出登录功能
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', function(e) {
+            logoutBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 localStorage.removeItem('authToken');
                 window.location.href = '/login';

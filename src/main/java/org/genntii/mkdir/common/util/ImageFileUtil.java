@@ -8,9 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.genntii.mkdir.common.Exception.ImageErrorException;
 import org.genntii.mkdir.common.properties.CosProperties;
+import org.genntii.mkdir.domain.entity.Image;
+import org.genntii.mkdir.mapper.ImageMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
@@ -29,6 +33,9 @@ public class ImageFileUtil {
 
     @Resource
     private CosProperties cosProperties;
+
+    @Resource
+    private ImageMapper imageMapper;
 
     public String upload(MultipartFile file) {
     try {
@@ -49,6 +56,15 @@ public class ImageFileUtil {
                 cosProperties.getBucketName(), key, file.getInputStream(), metadata);
 
         cosClient.putObject(putObjectRequest);
+
+
+        BufferedImage bufferedImage = ImageIO.read(file.getInputStream());
+        Image image = new Image();
+        image.setKey(key);
+        image.setType(file.getContentType());
+        image.setHeight(bufferedImage.getHeight());
+        imageMapper.insert(image);
+
         return key;
     } catch (Exception e) {
         throw new ImageErrorException("图片上传失败: " + e.getMessage());

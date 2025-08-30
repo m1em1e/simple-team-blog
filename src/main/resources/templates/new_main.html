@@ -524,6 +524,7 @@
         }
 
         articles.forEach(article => {
+            console.log(article)
             const color1 = generateValidColor();
             const color2 = generateValidColor();
 
@@ -535,7 +536,7 @@
                 const remainingCount = article.categoryList.length - maxDisplay;
 
                 displayCategories.forEach(category => {
-                    categoryTagsHTML += `<div class="category-tag">${category.categoryName}</div>`;
+                    categoryTagsHTML += `<div class="category-tag" >${category.categoryName}</div>`;
                 });
 
                 if (remainingCount > 0) {
@@ -546,8 +547,8 @@
             contentHTML += `
         <div class="content" data-id="${article.id}" style="--color1: ${color1}; --color2: ${color2}">
             <div class="image-box">
-                <div class="image" style="minheight: ${article.coverHeight}; background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold;">
-                    <img src="${article.coverId}" style="max-width: 100%; height: auto;" alt="${article.title}">
+                <div class="image" style="min-height: ${article.coverHeight}; background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold;">
+                    <img src="${article.coverId}" style="min-height: ${article.coverHeight}; max-width: 100%; height: auto;" alt="${article.title}">
                 </div>
                 <div class="category-tags">
                     ${categoryTagsHTML}

@@ -147,6 +147,28 @@
         // 页面加载时检查本地是否有token
         checkExistingToken();
 
+        function getAllUrl() {
+            const path = window.location.pathname.split('/');
+            return path[path.length - 2] + '/' + path[path.length - 1];
+        }
+
+        function getReturnUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            console.log("urlParams:" + urlParams)
+            let returnUrl = urlParams.get('returnUrl');
+            console.log("returnUrl:" + returnUrl)
+            // 如果没有returnUrl参数，尝试使用原始方法
+            if (!returnUrl) {
+                try {
+                    returnUrl = getAllUrl();
+                } catch (e) {
+                    console.error("解析URL失败:", e);
+                    returnUrl = '/'; // 默认返回首页
+                }
+            }
+            return returnUrl;
+        }
+
         function checkExistingToken() {
             const token = localStorage.getItem('authToken');
             if (token) {
@@ -170,9 +192,9 @@
                 })
                 .then(data => {
                     if (data.code === 1) {
-                        // token有效，更新token并跳转到主页面
+                        // token有效，更新token并跳转到原页面
                         localStorage.setItem('authToken', data.data.token);
-                        window.location.href = '/';
+                        window.location.href = getReturnUrl()
                     } else {
                         // token无效，清除本地存储
                         // localStorage.removeItem('authToken');
@@ -236,7 +258,7 @@
                         if (data.code === 1) {
                             // 登录成功，存储token并跳转
                             localStorage.setItem('authToken', data.data);
-                            window.location.href = '/';
+                            window.location.href = getReturnUrl();
                         } else {
                             // 显示错误信息
                             if (errorAlert) {

@@ -3,6 +3,8 @@ package org.genntii.mkdir.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 登录页面控制器
@@ -21,7 +23,7 @@ public class LoginController {
      * @return 返回"login"视图名称，对应templates/login.html模板
      */
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(@RequestParam("returnUrl") String returnUrl) {
         return "login";
     }
 

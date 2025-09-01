@@ -355,9 +355,9 @@
 <script>
     const loginBtn = document.getElementById('loginBtn');
     const authToken = localStorage.getItem('authToken');
-    let userAvatar = document.getElementById('userAvatar');
+    const userAvatar = document.getElementById('userAvatar');
     const userMenu = document.getElementById('userMenu');
-
+    let articleId;
 
 
     init()
@@ -365,32 +365,40 @@
     function init() {
         // 页面加载时检查token并更新UI
         document.addEventListener('DOMContentLoaded', function() {
+            articleId = getArticleIdFromUrl()
+
             checkAuthStatus();
             getDetail();
+            setupEventListeners()
         });
-
-
-
     }
 
     // 检查认证状态
     function checkAuthStatus() {
         if (authToken) {
-            // 有token，显示用户头像
-            loginBtn.style.display = 'none';
-            userAvatar.style.display = 'block';
+            showAvatar()
         } else {
-            // 无token，显示登录按钮
-            loginBtn.style.display = 'block';
-            userAvatar.style.display = 'none';
+            showLoginBtn()
         }
     }
 
+    function showLoginBtn() {
+        loginBtn.style.display = 'block'
+        if (userAvatar) userAvatar.style.display = 'none'
+    }
+
+    function showAvatar() {
+        userAvatar.style.display = 'block'
+        if (loginBtn) loginBtn.style.display = 'none'
+    }
+
     // 从URL获取文章ID
-    function getUserIdFromUrl() {
+    function getArticleIdFromUrl() {
         const pathSegments = window.location.pathname.split('/');
         return pathSegments[pathSegments.length - 1];
     }
+
+
 
     function setupEventListeners() {
         // 登录按钮点击
@@ -417,8 +425,7 @@
 
 
         function handleLogin() {
-            console.log('login')
-            window.location.href = "/login";
+            window.location.href = "/login?returnUrl=/detail/"+articleId
         }
 
         function toggleUserMenu(e) {
@@ -435,12 +442,15 @@
 
     // 获取文章详情
     function getDetail() {
-        let articleId = getUserIdFromUrl();
+        let articleId = getArticleIdFromUrl()
+        console.log("articleIdFromMethod:"+getArticleIdFromUrl())
+        console.log("articleId:"+articleId)
         axios.get(`/api/article/detail/${articleId}`)
             .then(response => {
                 if (response.data.code === 1) {
                     console.log(response.data.data);
                     displayDetail(response.data.data);
+                    articleId = response.data.data.id
                 } else {
                     document.getElementById('loading').innerHTML =
                         '<p>加载文章失败，请刷新页面重试</p>';

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
 import org.genntii.mkdir.common.util.ImageFileUtil;
 import org.genntii.mkdir.domain.entity.Article;
+import org.genntii.mkdir.domain.entity.Image;
 import org.genntii.mkdir.domain.param.PageQueryParam;
 import org.genntii.mkdir.domain.vo.ArticleDetailVO;
 import org.genntii.mkdir.domain.vo.ArticleInfoVO;
@@ -94,8 +95,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 处理每篇文章的封面信息
         for (ArticleInfoVO article : articleList) {
             // 获取封面图片高度
-            int height = imageMapper.geyHeightByKey(article.getCoverId());
-            article.setCoverHeight(height);
+            Image image = imageMapper.geyHeightByKey(article.getCoverId());
+
+            article.setCoverHeight(image.getHeight());
+            article.setCoverWidth(image.getWidth());
 
             // 如果封面ID为空则跳过
             if (ObjectUtil.isNull(article.getCoverId())) continue;

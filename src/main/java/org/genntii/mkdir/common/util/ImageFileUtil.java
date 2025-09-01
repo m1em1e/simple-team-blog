@@ -63,6 +63,7 @@ public class ImageFileUtil {
         image.setKey(key);
         image.setType(file.getContentType());
         image.setHeight(bufferedImage.getHeight());
+        image.setWidth(bufferedImage.getWidth());
         imageMapper.insert(image);
 
         return key;

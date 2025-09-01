@@ -51,6 +51,11 @@ public class ArticleInfoVO {
     private Integer coverHeight;
 
     /**
+     * 封面图片宽度
+     */
+    private Integer coverWidth;
+
+    /**
      * 文章标题
      */
     private String title;

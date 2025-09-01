@@ -2,7 +2,6 @@ package org.genntii.mkdir.controller.restController;
 
 import jakarta.annotation.Resource;
 import org.genntii.mkdir.common.result.Result;
-import org.genntii.mkdir.domain.entity.Image;
 import org.genntii.mkdir.domain.param.KeyParam;
 import org.genntii.mkdir.service.ImageService;
 import org.springframework.web.bind.annotation.*;

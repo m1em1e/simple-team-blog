@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.baomidou.mybatisplus.extension.ddl.DdlScriptErrorHandler.PrintlnLogErrorHandler.log;
-
 /**
  * 用户信息控制器
  * 提供用户信息查询和更新功能
@@ -42,7 +40,7 @@ public class UserRestController {
      * @return 用户信息VO对象
      */
     @GetMapping("/user/{id}")
-    public Result<UserVO> getUserMessage(@PathVariable("id")Long id) {
+    public Result<UserVO> getUserMessage(@PathVariable("id") Long id) {
         return Result.success(userService.getUserMessage(id));
     }
 
@@ -63,7 +61,8 @@ public class UserRestController {
 
     /**
      * 上传用户头像
-     * @param id 用户ID
+     *
+     * @param id   用户ID
      * @param file 上传的头像文件
      * @return 包含更新后用户信息的结果对象
      */
@@ -82,6 +81,7 @@ public class UserRestController {
 
     /**
      * 通过token登录接口
+     *
      * @param token 登录凭证token
      * @return 登录结果，包含用户登录信息的Result对象
      */
@@ -90,7 +90,6 @@ public class UserRestController {
         // 调用用户服务通过token登录，并返回成功结果
         return Result.success(userService.loginByToken(token));
     }
-
 
 
 }

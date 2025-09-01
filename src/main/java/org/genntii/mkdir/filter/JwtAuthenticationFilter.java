@@ -1,6 +1,5 @@
 package org.genntii.mkdir.filter;
 
-import cn.hutool.jwt.Claims;
 import jakarta.annotation.Resource;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -44,11 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * 过滤器核心方法，用于处理每个HTTP请求的JWT认证逻辑
      *
-     * @param request  HTTP请求对象
-     * @param response HTTP响应对象
+     * @param request     HTTP请求对象
+     * @param response    HTTP响应对象
      * @param filterChain 过滤器链
      * @throws ServletException Servlet异常
-     * @throws IOException IO异常
+     * @throws IOException      IO异常
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

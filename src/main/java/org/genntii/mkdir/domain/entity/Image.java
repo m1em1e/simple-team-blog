@@ -24,6 +24,11 @@ public class Image {
     private int height;
 
     /**
+     *  图片宽度（像素）
+     */
+    private int width;
+
+    /**
      * 图片存储键值/路径
      */
     private String key;

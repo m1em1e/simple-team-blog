@@ -13,7 +13,7 @@ import org.genntii.mkdir.domain.entity.Image;
 @Mapper
 public interface ImageMapper extends BaseMapper<Image> {
 
-    @Select("select height from image where `key` = #{key}")
-    int geyHeightByKey(@Param("key") String key);
+    @Select("select * from image where `key` = #{key}")
+    Image geyHeightByKey(@Param("key") String key);
 
 }

@@ -30,4 +30,5 @@ public interface ArticleCategoryService extends IService<ArticleCategory> {
      */
     List<Long> getCategoryListByArticleId(Long articleId);
 
+    void insertBatch(List<ArticleCategory> articleCategories);
 }

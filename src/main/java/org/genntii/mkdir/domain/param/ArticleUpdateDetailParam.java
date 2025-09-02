@@ -1,6 +1,7 @@
-package org.genntii.mkdir.domain.vo;
+package org.genntii.mkdir.domain.param;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @since 2025/08/27 10:12
  */
 @Data
+@NoArgsConstructor
 public class ArticleUpdateDetailParam {
     /**
      * 封面图片ID

@@ -562,20 +562,75 @@
     // 用户菜单显示/隐藏
     const userAvatar = document.getElementById('userAvatar');
     const userMenu = document.getElementById('userMenu');
-    const authToken = localStorage.getItem('authToken') || 'Bearer your-token-here'; // 修改为获取token的实际方式
+    const authToken = localStorage.getItem('authToken')
 
-    if (userAvatar && userMenu) {
-        userAvatar.addEventListener('click', () => {
-            userMenu.classList.toggle('active');
-        });
+    init()
 
-        // 点击页面其他地方关闭菜单
+    function init() {
+        checkAuthStatus()
+        setupEventListeners()
+    }
+
+    function verifyToken() {
+        axios.get(`/api/login/${authToken}`)
+            .then(response => {
+                if (response.data.code === 1) {
+                    localStorage.setItem('authToken', response.data.data.token)
+                    showUserAvatar(response.data.data.avatar);
+                } else {
+                    localStorage.removeItem('authToken');
+                    window.location.href = "/"
+                }
+            })
+    }
+
+    function checkAuthStatus() {
+        if (authToken) {
+            verifyToken()
+        } else {
+            window.location.href = "/"
+        }
+    }
+
+    function setupEventListeners() {
+
+        // 用户头像点击
+        if (userAvatar) {
+            console.log("点击头像")
+            userAvatar.addEventListener('click', toggleUserMenu);
+        }
+
+        // 退出登录
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+
+        // 点击其他地方关闭菜单
         document.addEventListener('click', (e) => {
-            if (!userAvatar.contains(e.target) && !userMenu.contains(e.target)) {
+            if (userAvatar && !userAvatar.contains(e.target) && userMenu && !userMenu.contains(e.target)) {
                 userMenu.classList.remove('active');
             }
         });
     }
+
+
+    function showUserAvatar(avatarUrl) {
+        userAvatar.style.display = 'block'
+        if (loginBtn) loginBtn.style.display = 'none'
+        userAvatar.src = avatarUrl
+    }
+
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        userMenu.classList.toggle('active');
+    }
+
+    // 处理退出登录
+    function handleLogout() {
+        localStorage.removeItem('authToken')
+        window.location.reload()
+    }
+
 
     // 富文本编辑器功能
     document.querySelectorAll('.toolbar-btn').forEach(button => {
@@ -733,10 +788,7 @@
                 editor.innerHTML = '<h1>欢迎使用富文本编辑器</h1><p>在这里开始撰写您的文章内容...</p>';
                 updateWordCount();
 
-                // 取消选择所有分类
-                Array.from(categorySelect.options).forEach(option => {
-                    option.selected = false;
-                });
+                window.location.href = "/"
             } else {
                 showMessage('更新失败: ' + response.data.msg, 'error');
             }

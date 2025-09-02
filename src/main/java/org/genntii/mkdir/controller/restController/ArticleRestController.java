@@ -12,7 +12,7 @@ import org.genntii.mkdir.domain.entity.User;
 import org.genntii.mkdir.domain.param.PageQueryParam;
 import org.genntii.mkdir.domain.vo.ArticleDetailVO;
 import org.genntii.mkdir.domain.vo.ArticleInfoVO;
-import org.genntii.mkdir.domain.vo.ArticleUpdateDetailParam;
+import org.genntii.mkdir.domain.param.ArticleUpdateDetailParam;
 import org.genntii.mkdir.domain.vo.CategoryVO;
 import org.genntii.mkdir.service.ArticleCategoryService;
 import org.genntii.mkdir.service.ArticleService;
@@ -60,6 +60,9 @@ public class ArticleRestController {
      */
     @PostMapping("/detail")
     public Result update(@RequestBody ArticleUpdateDetailParam param, @RequestHeader("Authorization") String token) {
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
         // 解析JWT获取用户ID
         Long id = jwtCommonUtil.parseJwt(token);
         // 构造文章对象并设置基本信息
@@ -71,7 +74,7 @@ public class ArticleRestController {
         article.setIntroduction(param.getContent().length()<=10? param.getContent() : param.getContent().substring(0, 7) + "...");
         article.setContent(param.getContent());
         article.setStatus((byte) 1);
-        articleService.save(article);
+        articleService.insert(article);
 
         // 构造文章分类关联列表
         List<ArticleCategory> articleCategories = new ArrayList<>();
@@ -82,7 +85,7 @@ public class ArticleRestController {
             articleCategories.add(articleCategory);
         }
         // 批量保存文章分类关联关系
-        articleCategoryService.saveBatch(articleCategories);
+        articleCategoryService.getBaseMapper().insert(articleCategories);
 
         return Result.success();
     }

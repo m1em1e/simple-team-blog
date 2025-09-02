@@ -23,4 +23,5 @@ public interface ArticleCategoryMapper extends BaseMapper<ArticleCategory> {
     List<Long> getCategoryListByArticleId(Long articleId);
 
 
+    void insertBatch(List<ArticleCategory> articleCategories);
 }

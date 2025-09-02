@@ -2,7 +2,7 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY mkdir-0.0.2.20250901_beta.jar app.jar
+COPY simple-team-blog-0.0.4.20250902_beta.jar app.jar
 
 EXPOSE 8080
 

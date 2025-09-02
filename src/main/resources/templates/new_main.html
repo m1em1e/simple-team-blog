@@ -339,6 +339,10 @@
             <i class="fas fa-cog"></i>
             <span>账号设置</span>
         </div>
+        <div class="user-menu-item" id="articleUploadBtn">
+            <i class="fa-solid fa-file"></i>
+            <span>上传文章</span>
+        </div>
         <div class="user-menu-item" id="logoutBtn">
             <i class="fas fa-sign-out-alt"></i>
             <span>退出登录</span>
@@ -365,6 +369,7 @@
     const userMenu = document.getElementById('userMenu');
     const logoutBtn = document.getElementById('logoutBtn');
     const userSection = document.getElementById('userSection')
+    const articleUploadBtn = document.getElementById('articleUploadBtn')
 
     let userAvatar = document.getElementById('userAvatar');
 
@@ -434,6 +439,10 @@
             logoutBtn.addEventListener('click', handleLogout);
         }
 
+        if (articleUploadBtn) {
+            articleUploadBtn.addEventListener('click', handleUpdate)
+        }
+
         // 滚动加载
         window.addEventListener('scroll', handleScroll);
 
@@ -462,6 +471,10 @@
     function handleLogout() {
         localStorage.removeItem('authToken')
         window.location.reload()
+    }
+
+    function handleUpdate() {
+        window.location.href = "/upload"
     }
 
     // 处理滚动加载

@@ -14,6 +14,7 @@ import org.genntii.mkdir.domain.vo.ArticleInfoVO;
 import org.genntii.mkdir.mapper.ArticleMapper;
 import org.genntii.mkdir.mapper.ImageMapper;
 import org.genntii.mkdir.service.ArticleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      */
     @Resource
     private ImageMapper imageMapper;
+    @Autowired
+    private ArticleMapper articleMapper;
 
     /**
      * 根据文章ID列表获取文章信息展示对象列表
@@ -136,5 +139,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
 
         return articleDetailVO;
+    }
+
+    @Override
+    public void insert(Article article) {
+        articleMapper.insert(article);
     }
 }

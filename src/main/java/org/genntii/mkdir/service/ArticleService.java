@@ -42,4 +42,5 @@ public interface ArticleService extends IService<Article> {
      */
     ArticleDetailVO getArticleDetail(Long id);
 
+    void insert(Article article);
 }

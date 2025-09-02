@@ -40,4 +40,9 @@ public class ArticleCategoryServiceImpl extends ServiceImpl<ArticleCategoryMappe
     public List<Long> getArticleListByCategoryId(Long categoryId) {
         return baseMapper.getArticleListByCategoryId(categoryId);
     }
+
+    @Override
+    public void insertBatch(List<ArticleCategory> articleCategories) {
+        baseMapper.insertBatch(articleCategories);
+    }
 }

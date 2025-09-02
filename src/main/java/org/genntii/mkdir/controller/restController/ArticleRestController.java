@@ -12,7 +12,7 @@ import org.genntii.mkdir.domain.entity.User;
 import org.genntii.mkdir.domain.param.PageQueryParam;
 import org.genntii.mkdir.domain.vo.ArticleDetailVO;
 import org.genntii.mkdir.domain.vo.ArticleInfoVO;
-import org.genntii.mkdir.domain.vo.ArticleUpdateDetailParam;
+import org.genntii.mkdir.domain.param.ArticleUpdateDetailParam;
 import org.genntii.mkdir.domain.vo.CategoryVO;
 import org.genntii.mkdir.service.ArticleCategoryService;
 import org.genntii.mkdir.service.ArticleService;
@@ -59,7 +59,7 @@ public class ArticleRestController {
      * @return 操作结果，成功返回Result.success()
      */
     @PostMapping("/detail")
-    public Result update(@RequestBody ArticleUpdateDetailParam param, @RequestHeader("Authorization") String token) {
+    public Result update(@RequestBody(required = false) ArticleUpdateDetailParam param, @RequestHeader("Authorization") String token) {
         // 解析JWT获取用户ID
         Long id = jwtCommonUtil.parseJwt(token);
         // 构造文章对象并设置基本信息

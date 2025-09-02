@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章编辑与发布 - 咩咩青羽的游戏开发小屋</title>
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* 顶部导航栏 */
+        .header {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            color: #6a11cb;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff7eee 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid #6a11cb;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(106, 17, 203, 0.5);
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 60px;
+            right: 40px;
+            background: rgba(35, 35, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            z-index: 101;
+        }
+
+        .user-menu.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-menu-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-menu-item:hover {
+            background: rgba(106, 17, 203, 0.2);
+        }
+
+        .user-menu-item i {
+            color: #8a2be2;
+            width: 20px;
+        }
+
+        /* 文章表单容器 */
+        .article-form {
+            max-width: 900px;
+            margin: 40px auto;
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #b8b8d9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #6a11cb;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(35, 35, 58, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: #e6e6e6;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.3);
+        }
+
+        .form-select {
+            width: 100%;
+            background: rgba(35, 35, 58, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: #e6e6e6;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236a11cb'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 16px;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.3);
+        }
+
+        /* 编辑器容器 */
+        .editor-container {
+            background: rgba(26, 26, 46, 0.5);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 编辑器工具栏 */
+        .editor-toolbar {
+            background: rgba(35, 35, 58, 0.9);
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 5px;
+            padding-right: 15px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .toolbar-btn {
+            background: rgba(106, 17, 203, 0.3);
+            border: none;
+            color: #e6e6e6;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toolbar-btn:hover {
+            background: rgba(106, 17, 203, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .toolbar-btn.active {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+
+        /* 编辑器内容区域 */
+        .editor-content {
+            min-height: 400px;
+            padding: 30px;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.6;
+            background: rgba(20, 20, 35, 0.5);
+        }
+
+        .editor-content:focus {
+            outline: none;
+        }
+
+        /* 编辑器底部状态栏 */
+        .editor-status {
+            background: rgba(35, 35, 58, 0.9);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #a0a0c0;
+            font-size: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .word-count {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        .cancel-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e6e6e6;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 消息提示 */
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            background: rgba(35, 35, 58, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 1000;
+        }
+
+        .message.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .message.success {
+            border-left: 4px solid #4caf50;
+        }
+
+        .message.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .message i {
+            font-size: 20px;
+        }
+
+        .message.success i {
+            color: #4caf50;
+        }
+
+        .message.error i {
+            color: #f44336;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .article-form {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .editor-toolbar {
+                padding: 10px;
+            }
+
+            .toolbar-group {
+                padding-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            .editor-content {
+                padding: 20px;
+                min-height: 300px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<header class="header">
+    <a href="/" class="logo">
+        <i class="fas fa-blog logo-icon"></i>
+        <div class="logo-text">咩咩青羽的游戏开发小屋</div>
+    </a>
+    <div class="user-section" id="userSection">
+        <button class="login-btn" id="loginBtn" style="display: none;">
+            <i class="fas fa-sign-in-alt"></i> 登录
+        </button>
+        <img th:src="${url}" class="user-avatar" id="userAvatar" alt="用户头像">
+    </div>
+
+    <!-- 用户菜单 -->
+    <div class="user-menu" id="userMenu">
+        <div class="user-menu-item">
+            <i class="fas fa-user-circle"></i>
+            <span>用户信息</span>
+        </div>
+        <div class="user-menu-item">
+            <i class="fas fa-cog"></i>
+            <span>账号设置</span>
+        </div>
+        <div class="user-menu-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>退出登录</span>
+        </div>
+    </div>
+</header>
+
+<!-- 消息提示 -->
+<div class="message" id="message">
+    <i class="fas fa-check-circle"></i>
+    <span id="messageText"></span>
+</div>
+
+<!-- 文章编辑表单 -->
+<div class="article-form">
+    <div class="form-group">
+        <label class="form-label" for="articleTitle">
+            <i class="fas fa-heading"></i>文章标题
+        </label>
+        <input type="text" id="articleTitle" class="form-input" placeholder="请输入文章标题">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="coverId">
+            <i class="fas fa-image"></i>封面ID
+        </label>
+        <input type="text" id="coverId" class="form-input" placeholder="请输入封面ID">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="categorySelect">
+            <i class="fas fa-tag"></i>文章分类
+        </label>
+        <select id="categorySelect" class="form-select" multiple>
+            <option value="">加载中...</option>
+        </select>
+        <small style="display: block; margin-top: 8px; color: #a0a0c0;">按住Ctrl键可多选</small>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">
+            <i class="fas fa-edit"></i>文章内容
+        </label>
+
+        <!-- 富文本编辑器 -->
+        <div class="editor-container">
+            <!-- 工具栏 -->
+            <div class="editor-toolbar">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="bold" title="粗体"><i class="fas fa-bold"></i></button>
+                    <button class="toolbar-btn" data-command="italic" title="斜体"><i class="fas fa-italic"></i></button>
+                    <button class="toolbar-btn" data-command="underline" title="下划线"><i class="fas fa-underline"></i></button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="justifyLeft" title="左对齐"><i class="fas fa-align-left"></i></button>
+                    <button class="toolbar-btn" data-command="justifyCenter" title="居中"><i class="fas fa-align-center"></i></button>
+                    <button class="toolbar-btn" data-command="justifyRight" title="右对齐"><i class="fas fa-align-right"></i></button>
+                    <button class="toolbar-btn" data-command="justifyFull" title="两端对齐"><i class="fas fa-align-justify"></i></button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="insertUnorderedList" title="无序列表"><i class="fas fa-list-ul"></i></button>
+                    <button class="toolbar-btn" data-command="insertOrderedList" title="有序列表"><i class="fas fa-list-ol"></i></button>
+                    <button class="toolbar-btn" data-command="outdent" title="减少缩进"><i class="fas fa-outdent"></i></button>
+                    <button class="toolbar-btn" data-command="indent" title="增加缩进"><i class="fas fa-indent"></i></button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="createLink" title="插入链接"><i class="fas fa-link"></i></button>
+                    <button class="toolbar-btn" data-command="unlink" title="移除链接"><i class="fas fa-unlink"></i></button>
+                    <button class="toolbar-btn" data-command="insertImage" title="插入图片"><i class="fas fa-image"></i></button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="h1" title="标题1"><i class="fas fa-heading"></i>1</button>
+                    <button class="toolbar-btn" data-command="h2" title="标题2"><i class="fas fa-heading"></i>2</button>
+                    <button class="toolbar-btn" data-command="h3" title="标题3"><i class="fas fa-heading"></i>3</button>
+                </div>
+
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" data-command="removeFormat" title="清除格式"><i class="fas fa-eraser"></i></button>
+                    <button class="toolbar-btn" data-command="code" title="代码块"><i class="fas fa-code"></i></button>
+                    <button class="toolbar-btn" data-command="quote" title="引用"><i class="fas fa-quote-right"></i></button>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="editor-content" id="editor" contenteditable="true">
+                <h1>欢迎使用富文本编辑器</h1>
+                <p>在这里开始撰写您的文章内容...</p>
+            </div>
+
+            <!-- 状态栏 -->
+            <div class="editor-status">
+                <div class="word-count">
+                    <i class="fas fa-font"></i>
+                    <span id="wordCount">0</span> 字
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn cancel-btn" id="clearContent">
+                        <i class="fas fa-trash-alt"></i>清空内容
+                    </button>
+                    <button class="action-btn save-btn" id="publishArticle">
+                        <i class="fas fa-paper-plane"></i>发布文章
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 用户菜单显示/隐藏
+    const userAvatar = document.getElementById('userAvatar');
+    const userMenu = document.getElementById('userMenu');
+    const authToken = localStorage.getItem('authToken') || 'Bearer your-token-here'; // 修改为获取token的实际方式
+
+    if (userAvatar && userMenu) {
+        userAvatar.addEventListener('click', () => {
+            userMenu.classList.toggle('active');
+        });
+
+        // 点击页面其他地方关闭菜单
+        document.addEventListener('click', (e) => {
+            if (!userAvatar.contains(e.target) && !userMenu.contains(e.target)) {
+                userMenu.classList.remove('active');
+            }
+        });
+    }
+
+    // 富文本编辑器功能
+    document.querySelectorAll('.toolbar-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const command = button.dataset.command;
+
+            // 处理特殊命令
+            if (command === 'h1' || command === 'h2' || command === 'h3') {
+                document.execCommand('formatBlock', false, command);
+            } else if (command === 'code') {
+                document.execCommand('formatBlock', false, 'pre');
+            } else if (command === 'quote') {
+                document.execCommand('formatBlock', false, 'blockquote');
+            } else if (command === 'insertImage') {
+                const url = prompt('请输入图片URL:', 'https://');
+                if (url) {
+                    document.execCommand('insertImage', false, url);
+                }
+            } else if (command === 'createLink') {
+                const url = prompt('请输入链接URL:', 'https://');
+                if (url) {
+                    document.execCommand('createLink', false, url);
+                }
+            } else {
+                document.execCommand(command, false, null);
+            }
+
+            // 更新编辑器焦点
+            document.getElementById('editor').focus();
+        });
+    });
+
+    // 字数统计
+    const editor = document.getElementById('editor');
+    const wordCount = document.getElementById('wordCount');
+
+    function updateWordCount() {
+        if (editor && wordCount) {
+            const text = editor.innerText || '';
+            // 中文字数统计（近似）
+            const count = text.replace(/\s/g, '').length;
+            wordCount.textContent = count;
+        }
+    }
+
+    if (editor) {
+        editor.addEventListener('input', updateWordCount);
+        // 初始化字数统计
+        updateWordCount();
+    }
+
+    // 清空内容按钮
+    document.getElementById('clearContent').addEventListener('click', () => {
+        if (confirm('确定要清空所有内容吗？')) {
+            editor.innerHTML = '';
+            updateWordCount();
+        }
+    });
+
+    // 获取分类数据
+    async function loadCategories() {
+        try {
+            const response = await axios.get('/api/category/list');
+            if (response.data.code === 1) {
+                const categories = response.data.data;
+                const categorySelect = document.getElementById('categorySelect');
+
+                // 清空现有选项
+                categorySelect.innerHTML = '';
+
+                // 添加分类选项
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.categoryName;
+                    categorySelect.appendChild(option);
+                });
+            } else {
+                showMessage('获取分类失败: ' + response.data.msg, 'error');
+            }
+        } catch (error) {
+            console.error('获取分类失败:', error);
+            showMessage('获取分类失败，请检查网络连接', 'error');
+        }
+    }
+
+    // 显示消息提示
+    function showMessage(text, type = 'success') {
+        const message = document.getElementById('message');
+        const messageText = document.getElementById('messageText');
+
+        messageText.textContent = text;
+        message.className = 'message ' + type;
+        message.classList.add('show');
+
+        // 3秒后隐藏消息
+        setTimeout(() => {
+            message.classList.remove('show');
+        }, 3000);
+    }
+
+    // 发布文章
+    async function publishArticle() {
+        const title = document.getElementById('articleTitle').value.trim();
+        const coverId = document.getElementById('coverId').value.trim();
+        const content = editor.innerHTML;
+        const categorySelect = document.getElementById('categorySelect');
+
+        // 验证输入
+        if (!title) {
+            showMessage('请输入文章标题', 'error');
+            return;
+        }
+
+        if (!content || content === '<h1>欢迎使用富文本编辑器</h1><p>在这里开始撰写您的文章内容...</p>') {
+            showMessage('请输入文章内容', 'error');
+            return;
+        }
+
+        // 获取选中的分类ID
+        const selectedCategories = Array.from(categorySelect.selectedOptions)
+            .map(option => parseInt(option.value))
+            .filter(id => !isNaN(id));
+
+        if (selectedCategories.length === 0) {
+            showMessage('请至少选择一个分类', 'error');
+            return;
+        }
+
+        // 准备请求数据 - 确保与后端ArticleUpdateDetailParam结构匹配
+        const requestData = {
+            title: title,
+            coverId: coverId,
+            content: content,
+            categoryId: selectedCategories
+        };
+
+        console.log("发送的数据:", requestData); // 调试用
+
+        try {
+            // 发送PUT请求到正确的端点
+            const response = await axios.post('/api/article/detail', requestData, {
+                headers: {
+                    'Authorization': authToken,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.data.code === 1) {
+                showMessage('文章更新成功！');
+
+                // 清空表单
+                document.getElementById('articleTitle').value = '';
+                document.getElementById('coverId').value = '';
+                editor.innerHTML = '<h1>欢迎使用富文本编辑器</h1><p>在这里开始撰写您的文章内容...</p>';
+                updateWordCount();
+
+                // 取消选择所有分类
+                Array.from(categorySelect.options).forEach(option => {
+                    option.selected = false;
+                });
+            } else {
+                showMessage('更新失败: ' + response.data.msg, 'error');
+            }
+        } catch (error) {
+            console.error('更新文章失败:', error);
+            if (error.response) {
+                // 服务器返回了错误状态码
+                console.error('错误响应:', error.response.data);
+                showMessage(`更新失败: ${error.response.status} - ${JSON.stringify(error.response.data)}`, 'error');
+            } else {
+                showMessage('更新失败，请检查网络连接', 'error');
+            }
+        }
+    }
+
+    // 绑定发布按钮事件
+    document.getElementById('publishArticle').addEventListener('click', publishArticle);
+
+    // 页面加载时获取分类数据
+    document.addEventListener('DOMContentLoaded', loadCategories);
+</script>
+</body>
+</html>

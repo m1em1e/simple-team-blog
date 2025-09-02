@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.genntii</groupId>
     <artifactId>mkdir</artifactId>
-    <version>0.0.2.20250901_beta</version>
+    <version>0.0.3.20250902_beta</version>
     <name>mkdir</name>
     <description>mkdir</description>
     <properties>

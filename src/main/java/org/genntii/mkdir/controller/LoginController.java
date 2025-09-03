@@ -22,7 +22,7 @@ public class LoginController {
      */
     @GetMapping("/login")
     public String loginPage(@RequestParam("returnUrl") String returnUrl) {
-        return "login";
+        return "new_login";
     }
 
 }

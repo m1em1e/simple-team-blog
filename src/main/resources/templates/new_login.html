@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>咩咩青羽的游戏开发小屋 - 登录</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航栏 */
+        .header {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            color: #6a11cb;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff7eee 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* 登录区域样式 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 40px 20px;
+        }
+
+        .login-box {
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #ff7eee 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #a0a0c0;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(15, 15, 26, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .errorAlert {
+            color: #ff4757;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(255, 71, 87, 0.1);
+        }
+
+        .successAlert {
+            color: #2ed573;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(46, 213, 115, 0.1);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+
+        /* 响应式设计 */
+        @media (max-width: 500px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <a href="/" class="logo">
+        <i class="fas fa-blog logo-icon"></i>
+        <div class="logo-text">咩咩青羽的游戏开发小屋</div>
+    </a>
+</header>
+
+<main class="login-container">
+    <div class="login-box">
+        <h2 class="login-title">用户登录</h2>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            <div class="input-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span class="spinner" id="spinner" style="display: none;"></span>
+                <span id="btnText">登录</span>
+            </button>
+            <div class="errorAlert" id="errorAlert"></div>
+            <div class="successAlert" id="successAlert"></div>
+        </form>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('loginBtn');
+        const spinner = document.getElementById('spinner');
+        const btnText = document.getElementById('btnText');
+        const errorAlert = document.getElementById('errorAlert');
+        const successAlert = document.getElementById('successAlert');
+
+        // 检查是否已有token
+        checkExistingToken();
+
+        // 获取当前URL路径
+        function getAllUrl() {
+            const path = window.location.pathname.split('/');
+            return path[path.length - 2] + '/' + path[path.length - 1];
+        }
+
+        // 获取返回URL
+        function getReturnUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let returnUrl = urlParams.get('returnUrl');
+
+            // 如果没有returnUrl参数，尝试使用原始方法
+            if (!returnUrl) {
+                try {
+                    returnUrl = getAllUrl();
+                } catch (e) {
+                    console.error("解析URL失败:", e);
+                    returnUrl = '/'; // 默认返回首页
+                }
+            }
+            return returnUrl;
+        }
+
+        // 检查现有token
+        function checkExistingToken() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                // 显示加载状态
+                if (spinner) spinner.style.display = 'inline-block';
+                if (btnText) btnText.textContent = '验证中...';
+                if (loginBtn) loginBtn.disabled = true;
+                if (errorAlert) errorAlert.style.display = 'none';
+
+                // 向后端验证token有效性
+                fetch(`/api/login/${token}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('网络响应错误');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.code === 1) {
+                            // token有效，更新token并跳转到原页面
+                            localStorage.setItem('authToken', data.data.token);
+                            window.location.href = getReturnUrl();
+                        } else {
+                            // token无效，清除本地存储
+                            localStorage.removeItem('authToken');
+                            // 显示错误信息
+                            if (errorAlert) {
+                                errorAlert.textContent = '登录已过期，请重新登录';
+                                errorAlert.style.display = 'block';
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        // 请求失败，清除本地token
+                        localStorage.removeItem('authToken');
+                        if (errorAlert) {
+                            errorAlert.textContent = '登录验证失败: ' + error.message;
+                            errorAlert.style.display = 'block';
+                        }
+                    })
+                    .finally(() => {
+                        // 隐藏加载状态
+                        if (spinner) spinner.style.display = 'none';
+                        if (btnText) btnText.textContent = '登录';
+                        if (loginBtn) loginBtn.disabled = false;
+                    });
+            }
+        }
+
+        // 登录表单提交处理
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // 隐藏消息
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+
+            // 简单验证
+            if (!username || !password) {
+                errorAlert.textContent = '请输入用户名和密码';
+                errorAlert.style.display = 'block';
+                return;
+            }
+
+            // 显示加载状态
+            spinner.style.display = 'inline-block';
+            btnText.textContent = '登录中...';
+            loginBtn.disabled = true;
+
+            // 发送登录请求
+            axios.post('/api/auth/login', {
+                username: username,
+                password: password
+            })
+                .then(function(response) {
+                    const data = response.data;
+
+                    if (data.code === 1) {
+                        // 登录成功
+                        successAlert.textContent = '登录成功，正在跳转...';
+                        successAlert.style.display = 'block';
+
+                        // 存储token到本地缓存
+                        localStorage.setItem('authToken', data.data);
+
+                        // 2秒后返回原页面
+                        setTimeout(() => {
+                            window.location.href = getReturnUrl();
+                        }, 2000);
+                    } else {
+                        // 登录失败
+                        errorAlert.textContent = data.msg || '登录失败，请检查用户名和密码';
+                        errorAlert.style.display = 'block';
+                    }
+                })
+                .catch(function(error) {
+                    // 登录失败，显示错误信息
+                    errorAlert.textContent = error.response?.data?.message || '登录失败，请检查网络连接';
+                    errorAlert.style.display = 'block';
+                })
+                .finally(function() {
+                    // 隐藏加载状态
+                    spinner.style.display = 'none';
+                    btnText.textContent = '登录';
+                    loginBtn.disabled = false;
+                });
+        });
+    });
+
+    // 填充演示账户
+    function fillDemoAccount(username, password) {
+        document.getElementById('username').value = username;
+        document.getElementById('password').value = password;
+    }
+</script>
+</body>
+</html>

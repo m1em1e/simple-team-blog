@@ -77,6 +77,11 @@
             transition: all 0.3s ease;
         }
 
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
         .login-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -312,6 +317,14 @@
                 right: 20px;
                 width: 180px;
             }
+
+            .user-page {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: inline-block;
+                width: 150px;
+            }
         }
     </style>
 </head>
@@ -331,7 +344,7 @@
 
     <!-- 用户菜单 -->
     <div class="user-menu" id="userMenu">
-        <div class="user-menu-item">
+        <div class="user-menu-item" id="userDetailBtn">
             <i class="fas fa-user-circle"></i>
             <span>用户信息</span>
         </div>
@@ -370,6 +383,7 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const userSection = document.getElementById('userSection')
     const articleUploadBtn = document.getElementById('articleUploadBtn')
+    const userDetailBtn = document.getElementById('userDetailBtn')
 
     let userAvatar = document.getElementById('userAvatar');
 
@@ -379,6 +393,8 @@
     let isLoading = false;
     let hasMore = true;
     let authToken = localStorage.getItem('authToken');
+
+    let userId;
 
     // 初始化
     function init() {
@@ -403,6 +419,7 @@
                 if (response.data.code === 1) {
                     localStorage.setItem('authToken', response.data.data.token)
                     showUserAvatar(response.data.data.avatar);
+                    userId = response.data.data.id
                 } else {
                     localStorage.removeItem('authToken');
                     authToken = null;
@@ -434,6 +451,10 @@
             userAvatar.addEventListener('click', toggleUserMenu);
         }
 
+        if (userDetailBtn) {
+            userDetailBtn.addEventListener('click', userDetailPage)
+        }
+
         // 退出登录
         if (logoutBtn) {
             logoutBtn.addEventListener('click', handleLogout);
@@ -455,6 +476,9 @@
     }
 
 
+    function userDetailPage() {
+        window.location.href = "/user/detail/"+userId
+    }
 
     // 处理登录
     function handleLogin() {
@@ -559,7 +583,6 @@
             }
             let hw = article.coverHeight / article.coverWidth
 
-
             contentHTML += `
         <div class="content" data-id="${article.id}" style="--color1: ${color1}; --color2: ${color2}">
             <div class="image-box">
@@ -572,15 +595,17 @@
             </div>
             <div class="content-container">
                 <div class="profile">
-                    <div class="avatar-container">
-                        <div class="avatar" style="background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white;">
-                            <img src="${article.authorAvatarUrl}" style="max-width: 100%; height: auto; border-radius: 50%;" alt="${article.authorName}">
+                    <div class="user-page" data-id="${article.author}" style="display: flex; align-items: center;">
+                        <div class="avatar-container">
+                            <div class="avatar" style="background: linear-gradient(45deg, ${color1}, ${color2}); display: flex; justify-content: center; align-items: center; color: white;">
+                                <img src="${article.authorAvatarUrl}" style="max-width: 100%; height: auto; border-radius: 50%;" alt="${article.authorName}">
+                            </div>
+                            <div class="avatar-background"></div>
                         </div>
-                        <div class="avatar-background"></div>
-                    </div>
-                    <div>
-                        <div class="nickname">${article.authorName}</div>
-                        <div class="post-time">${article.updateTime}</div>
+                        <div style="margin-left: 10px;">
+                            <div class="nickname">${article.authorName}</div>
+                            <div class="post-time">${article.updateTime}</div>
+                        </div>
                     </div>
                 </div>
                 <div class="title">${article.title}</div>
@@ -594,9 +619,21 @@
 
         // 添加点击事件
         document.querySelectorAll('.content').forEach(content => {
-            content.addEventListener('click', () => {
+            content.addEventListener('click', (e) => {
+                // 检查点击的是否是用户信息区域
+                if (e.target.closest('.user-page')) {
+                    return; // 如果是用户信息区域，不处理文章点击
+                }
                 const articleId = content.getAttribute('data-id');
                 window.location.href = `/detail/${articleId}`;
+            });
+        });
+
+        document.querySelectorAll('.user-page').forEach(content => {
+            content.addEventListener('click', (e) => {
+                e.stopPropagation(); // 阻止事件冒泡
+                const authorId = content.getAttribute('data-id');
+                window.location.href = `/user/detail/${authorId}`;
             });
         });
 

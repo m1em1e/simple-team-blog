@@ -58,6 +58,11 @@ public class UserVO implements Serializable {
     private String description;
 
     /**
+     * 个人背景图片
+     */
+    private String backgroundImageUrl;
+
+    /**
      * 用户最后登录时间
      */
     private LocalDateTime lastLoginTime;

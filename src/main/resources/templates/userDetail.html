@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>咩咩青羽的游戏开发小屋 - 个人主页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景图片样式 */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .background-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        /* 顶部导航栏 */
+        .header {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            color: #6a11cb;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff7eee 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header栏头像样式 - 修复为小尺寸 */
+        .header-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid #6a11cb;
+            transition: all 0.3s ease;
+            object-fit: cover;
+            display: block;
+        }
+
+        .header-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(106, 17, 203, 0.5);
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 60px;
+            right: 40px;
+            background: rgba(35, 35, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 15px;
+            width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+            z-index: 101;
+        }
+
+        .user-menu.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-menu-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-menu-item:hover {
+            background: rgba(106, 17, 203, 0.2);
+        }
+
+        .user-menu-item i {
+            color: #8a2be2;
+            width: 20px;
+        }
+
+        /* 主要内容区域 */
+        .main-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            padding: 40px;
+        }
+
+        /* 用户信息卡片 */
+        .user-card {
+            width: 380px;
+            background: rgba(25, 25, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 2;
+        }
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        /* 用户卡片大头像样式 */
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #6a11cb;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: block;
+        }
+
+        .user-basic-info {
+            margin-left: 20px;
+        }
+
+        .user-nickname {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #ff7eee 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .user-details {
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            margin-bottom: 15px;
+        }
+
+        .detail-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #a0a0c0;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .user-description {
+            background: rgba(106, 17, 203, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .main-container {
+                justify-content: center;
+            }
+
+            .user-card {
+                width: 90%;
+                max-width: 400px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .main-container {
+                padding: 20px;
+            }
+
+            .user-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-basic-info {
+                margin-left: 0;
+                margin-top: 15px;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(106, 17, 203, 0.2);
+            border-radius: 50%;
+            border-top-color: #6a11cb;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<!-- 背景容器 -->
+<div class="background-container">
+    <img id="backgroundImage" class="background-image" th:src="${background}" alt="背景图片">
+</div>
+
+<!-- 顶部导航栏 -->
+<header class="header">
+    <a href="/" class="logo">
+        <i class="fas fa-blog logo-icon"></i>
+        <div class="logo-text">咩咩青羽的游戏开发小屋</div>
+    </a>
+    <div class="user-section" id="userSection">
+        <button class="login-btn" id="loginBtn" style="display: none;">
+            <i class="fas fa-sign-in-alt"></i> 登录
+        </button>
+        <img th:src="${userAvatar}" class="header-avatar" id="userAvatar" alt="用户头像">
+    </div>
+
+    <!-- 用户菜单 -->
+    <div class="user-menu" id="userMenu">
+        <div class="user-menu-item">
+            <i class="fas fa-user-circle"></i>
+            <span>用户信息</span>
+        </div>
+        <div class="user-menu-item">
+            <i class="fas fa-cog"></i>
+            <span>账号设置</span>
+        </div>
+        <div class="user-menu-item" id="articleUploadBtn">
+            <i class="fa-solid fa-file"></i>
+            <span>上传文章</span>
+        </div>
+        <div class="user-menu-item" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>退出登录</span>
+        </div>
+    </div>
+</header>
+
+<!-- 主要内容区域 -->
+<div class="main-container">
+    <!-- 用户信息卡片 -->
+    <div class="user-card">
+        <div class="user-header">
+            <img th:src="${userAvatarLarge}" class="profile-avatar" id="userAvatarLarge" alt="用户头像">
+            <div class="user-basic-info">
+                <h1 class="user-nickname">咩咩青羽</h1>
+                <div class="detail-item">
+                    <div class="detail-content">
+                        <span class="detail-label">最后登录</span>
+                        <span>2023-10-15 14:30</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-details">
+            <div class="detail-item">
+                <div class="detail-content">
+                    <span class="detail-label">性别</span>
+                    <span>男</span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-content">
+                    <span class="detail-label">生日</span>
+                    <span>1995-06-15</span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-content">
+                    <span class="detail-label">标签</span>
+                    <div class="tags-container">
+                        <span class="tag">游戏开发</span>
+                        <span class="tag">Unity</span>
+                        <span class="tag">C#</span>
+                        <span class="tag">独立游戏</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-content">
+                    <span class="detail-label">个人描述</span>
+                    <div class="user-description">
+                        热爱游戏开发的程序员，专注于Unity和C#开发，喜欢创作有趣的独立游戏。
+                        希望有一天能做出让玩家感到快乐的游戏作品。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const loginBtn = document.getElementById('loginBtn');
+    const userMenu = document.getElementById('userMenu');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userSection = document.getElementById('userSection')
+    const articleUploadBtn = document.getElementById('articleUploadBtn')
+    const authToken = localStorage.getItem('authToken')
+    let userAvatar = document.getElementById('userAvatar');
+
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAuthStatus();
+        setupEventListeners();
+        getUser()
+    });
+
+    function checkAuthStatus() {
+        if (authToken) {
+            showAvatar()
+        } else {
+            showLoginBtn()
+        }
+    }
+
+    function getUser() {
+        let userId = getUserIdFromUrl()
+        axios.get(`api/user/${userId}`)
+            .then(response => {
+                if (response.data.code === 1) {
+                    displayUserDetail(response.data.data)
+                } else {
+                    console.error("加载文章失败，请重试")
+                }
+            }) .catch(error => {
+            console.error('error: ', error)
+        })
+    }
+
+    function displayUserDetail(user) {
+        if ()
+    }
+
+    function showLoginBtn() {
+        loginBtn.style.display = 'block'
+        if (userAvatar) userAvatar.style.display = 'none'
+    }
+
+    function showAvatar() {
+        if (userAvatar) {
+            userAvatar.style.display = 'block'
+        }
+        if (loginBtn) loginBtn.style.display = 'none'
+    }
+
+    // 从URL获取用户ID
+    function getUserIdFromUrl() {
+        const pathSegments = window.location.pathname.split('/');
+        return pathSegments[pathSegments.length - 1];
+    }
+
+    function setupEventListeners() {
+        // 登录按钮点击
+        if (loginBtn) {
+            loginBtn.addEventListener('click', handleLogin);
+        }
+
+        // 用户头像点击
+        if (userAvatar) {
+            userAvatar.addEventListener('click', toggleUserMenu);
+        }
+
+        // 退出登录
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+
+        if (articleUploadBtn) {
+            articleUploadBtn.addEventListener('click', handleUpload)
+        }
+
+        // 点击其他地方关闭菜单
+        document.addEventListener('click', (e) => {
+            if (userAvatar && !userAvatar.contains(e.target) && userMenu && !userMenu.contains(e.target)) {
+                userMenu.classList.remove('active');
+            }
+        });
+    }
+
+    function handleLogin() {
+        const userId = getUserIdFromUrl();
+        window.location.href = "/login?returnUrl=/user/"+userId;
+    }
+
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        userMenu.classList.toggle('active');
+    }
+
+    // 处理退出登录
+    function handleLogout() {
+        localStorage.removeItem('authToken')
+        window.location.reload()
+    }
+
+    function handleUpload() {
+        window.location.href = "/upload"
+    }
+</script>
+</body>
+</html>

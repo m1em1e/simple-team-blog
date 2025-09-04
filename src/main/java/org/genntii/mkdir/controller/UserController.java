@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class UserController {
 
-    @GetMapping("/detail/{id}")
+    @GetMapping("/user/detail/{id}")
     public String userDetail(@PathVariable("id") Long id) {
         return "userDetail";
     }

@@ -34,8 +34,8 @@ public class UserRestController {
     private JwtCommonUtil jwtCommonUtil;
 
     /**
-     * 获取当前用户信息
-     * 返回当前登录用户的基本信息
+     * 获取用户信息
+     * 返回用户的基本信息
      *
      * @return 用户信息VO对象
      */

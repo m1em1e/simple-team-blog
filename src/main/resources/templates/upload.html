@@ -438,7 +438,7 @@
 
     <!-- 用户菜单 -->
     <div class="user-menu" id="userMenu">
-        <div class="user-menu-item">
+        <div class="user-menu-item" id="userDetailBtn">
             <i class="fas fa-user-circle"></i>
             <span>用户信息</span>
         </div>
@@ -563,6 +563,8 @@
     const userAvatar = document.getElementById('userAvatar');
     const userMenu = document.getElementById('userMenu');
     const authToken = localStorage.getItem('authToken')
+    const userDetailBtn = document.getElementById('userDetailBtn')
+    let userId;
 
     init()
 
@@ -577,6 +579,7 @@
                 if (response.data.code === 1) {
                     localStorage.setItem('authToken', response.data.data.token)
                     showUserAvatar(response.data.data.avatar);
+                    userId = response.data.data.id
                 } else {
                     localStorage.removeItem('authToken');
                     window.location.href = "/"
@@ -598,6 +601,10 @@
         if (userAvatar) {
             console.log("点击头像")
             userAvatar.addEventListener('click', toggleUserMenu);
+        }
+
+        if (userDetailBtn) {
+            userDetailBtn.addEventListener('click', userDetailPage)
         }
 
         // 退出登录
@@ -629,6 +636,10 @@
     function handleLogout() {
         localStorage.removeItem('authToken')
         window.location.reload()
+    }
+
+    function userDetailPage() {
+        window.location.href = "/user/detail/"+userId
     }
 
 

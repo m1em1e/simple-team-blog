@@ -307,7 +307,7 @@
 
     <!-- 用户菜单 -->
     <div class="user-menu" id="userMenu">
-        <div class="user-menu-item">
+        <div class="user-menu-item" id="userDetailBtn">
             <i class="fas fa-user-circle"></i>
             <span>用户信息</span>
         </div>
@@ -362,6 +362,8 @@
     const userAvatar = document.getElementById('userAvatar');
     const userMenu = document.getElementById('userMenu');
     const articleUploadBtn = document.getElementById('articleUploadBtn')
+    const userDetailBtn = document.getElementById('userDetailBtn')
+    let userId
     let articleId;
 
 
@@ -378,10 +380,25 @@
         });
     }
 
+
+    function verifyToken() {
+        axios.get(`/api/login/${authToken}`)
+            .then(response => {
+                if (response.data.code === 1) {
+                    localStorage.setItem('authToken', response.data.data.token)
+                    userId = response.data.data.id
+                    showAvatar()
+                } else {
+                    localStorage.removeItem('authToken');
+                    showLoginBtn()
+                }
+            })
+    }
+
     // 检查认证状态
     function checkAuthStatus() {
         if (authToken) {
-            showAvatar()
+            verifyToken()
         } else {
             showLoginBtn()
         }
@@ -411,6 +428,10 @@
             loginBtn.addEventListener('click', handleLogin);
         }
 
+        if (userDetailBtn) {
+            userDetailBtn.addEventListener('click', userDetailPage)
+        }
+
         // 用户头像点击
         if (userAvatar) {
             userAvatar.addEventListener('click', toggleUserMenu);
@@ -435,6 +456,10 @@
 
         function handleLogin() {
             window.location.href = "/login?returnUrl=/detail/"+articleId
+        }
+
+        function userDetailPage() {
+            window.location.href = "/user/detail/"+userId
         }
 
         function toggleUserMenu(e) {

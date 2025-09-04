@@ -359,11 +359,11 @@
         <div class="user-header">
             <img th:src="${userAvatarLarge}" class="profile-avatar" id="userAvatarLarge" alt="用户头像">
             <div class="user-basic-info">
-                <h1 class="user-nickname">咩咩青羽</h1>
+                <h1 class="user-nickname" id="user-nickname"></h1>
                 <div class="detail-item">
                     <div class="detail-content">
                         <span class="detail-label">最后登录</span>
-                        <span>2023-10-15 14:30</span>
+                        <span id="lastLoginTime"></span>
                     </div>
                 </div>
             </div>
@@ -373,25 +373,22 @@
             <div class="detail-item">
                 <div class="detail-content">
                     <span class="detail-label">性别</span>
-                    <span>男</span>
+                    <span id="user-sex"></span>
                 </div>
             </div>
 
             <div class="detail-item">
                 <div class="detail-content">
                     <span class="detail-label">生日</span>
-                    <span>1995-06-15</span>
+                    <span id="user-birthday"></span>
                 </div>
             </div>
 
             <div class="detail-item">
                 <div class="detail-content">
                     <span class="detail-label">标签</span>
-                    <div class="tags-container">
-                        <span class="tag">游戏开发</span>
-                        <span class="tag">Unity</span>
-                        <span class="tag">C#</span>
-                        <span class="tag">独立游戏</span>
+                    <div class="tags-container" id="tags-container">
+
                     </div>
                 </div>
             </div>
@@ -399,9 +396,7 @@
             <div class="detail-item">
                 <div class="detail-content">
                     <span class="detail-label">个人描述</span>
-                    <div class="user-description">
-                        热爱游戏开发的程序员，专注于Unity和C#开发，喜欢创作有趣的独立游戏。
-                        希望有一天能做出让玩家感到快乐的游戏作品。
+                    <div class="user-description" id="user-description">
                     </div>
                 </div>
             </div>
@@ -435,20 +430,42 @@
 
     function getUser() {
         let userId = getUserIdFromUrl()
-        axios.get(`api/user/${userId}`)
+        axios.get(`/api/user/${userId}`)
             .then(response => {
                 if (response.data.code === 1) {
                     displayUserDetail(response.data.data)
                 } else {
                     console.error("加载文章失败，请重试")
                 }
-            }) .catch(error => {
-            console.error('error: ', error)
-        })
+            })
+        //     .catch(error => {
+        //     console.error('error: ', error)
+        // })
     }
 
     function displayUserDetail(user) {
-        if ()
+        document.getElementById('user-nickname').textContent = user.nickname
+        let sex
+        if (user.sex === 1) sex = '男'
+        else if (user.sex === 2) sex = '女'
+        else sex = '其他'
+        document.getElementById('user-sex').textContent = sex
+        document.getElementById('user-birthday').textContent = user.birthday
+        document.getElementById('userAvatar').src = user.avatar
+        document.getElementById('userAvatarLarge').src = user.avatar
+        document.getElementById('user-description').textContent = user.description
+        document.getElementById('backgroundImage').src = user.backgroundImageUrl
+        document.getElementById('lastLoginTime').textContent = user.lastLoginTime
+
+        const tagsContainer = document.getElementById('tags-container')
+        if (user.tags && user.tags.length > 0) {
+            user.tags.forEach(tag => {
+                const span = document.createElement('span')
+                span.className = 'tag'
+                span.textContent = tag
+                tagsContainer.appendChild(span)
+            })
+        }
     }
 
     function showLoginBtn() {

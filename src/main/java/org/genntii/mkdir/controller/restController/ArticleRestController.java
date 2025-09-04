@@ -125,12 +125,12 @@ public class ArticleRestController {
     public Result<PageResult<ArticleInfoVO>> getPageResult(PageQueryParam param) {
         PageResult<ArticleInfoVO> articleInfoList = articleService.getArticleInfoList(param);
         for (ArticleInfoVO article : articleInfoList) {
-            List<Long> categoryIdList = articleCategoryService.getCategoryListByArticleId(article.getId());
+            List<Long> categoryIdList = articleCategoryService.getCategoryListByArticleId(Long.valueOf(article.getId()));
             if (ObjectUtil.isNotEmpty(categoryIdList) && ObjectUtil.isNotNull(categoryIdList)) {
                 List<CategoryVO> categoryVOList = categoryService.getCategoryVOList(categoryIdList);
                 article.setCategoryList(categoryVOList);
             }
-            User user = userService.getBaseMapper().selectUser(article.getAuthor());
+            User user = userService.getBaseMapper().selectUser(Long.valueOf(article.getAuthor()));
             article.setAuthorName(user.getNickname());
             article.setAuthorAvatarUrl(imageFileUtil.getImgUrl(user.getAvatar()));
         }

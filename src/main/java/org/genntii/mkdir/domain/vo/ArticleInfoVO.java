@@ -23,12 +23,12 @@ public class ArticleInfoVO {
     /**
      * 文章唯一标识ID
      */
-    private Long id;
+    private String id;
 
     /**
      * 作者用户ID
      */
-    private Long author;
+    private String author;
 
     /**
      * 作者名称

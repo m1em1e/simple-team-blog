@@ -33,4 +33,11 @@ public interface ArticleMapper extends BaseMapper<Article> {
             "order by update_time desc " +
             "limit #{index}, #{size}")
     PageResult<ArticleInfoVO> getArticleListWithoutKeyword(@Param("index") int index,@Param("size") int size);
+
+
+
+    PageResult<ArticleInfoVO> queryArticle(@Param("index") int index,
+                                     @Param("size") int size,
+                                     @Param("keyword") String keyword,
+                                     @Param("userId") long userId);
 }

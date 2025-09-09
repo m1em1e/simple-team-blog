@@ -76,14 +76,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public PageResult<ArticleInfoVO> getArticleInfoList(PageQueryParam param) {
         PageResult<ArticleInfoVO> articleList;
 
-        // 根据是否有关键字执行不同的查询方法
-        if (ObjectUtil.isNull(param.getKeyword()) || ObjectUtil.isEmpty(param.getKeyword())) {
-            // 无关键字查询
-            articleList = baseMapper.getArticleListWithoutKeyword((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize());
-        } else {
-            // 有关键字查询
-            articleList = baseMapper.getArticleList((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize(), param.getKeyword());
+        if (param.getUserId() == null) {
+            param.setUserId(0L);
         }
+        articleList =  baseMapper.queryArticle((param.getPageIndex() - 1) * param.getPageSize(), param.getPageSize(), param.getKeyword(), param.getUserId());
+
+
 
         // 构建查询条件用于统计总数
         QueryWrapper<Article> wrapper = new QueryWrapper<>();

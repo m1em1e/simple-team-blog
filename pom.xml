@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.genntii</groupId>
     <artifactId>simple-team-blog</artifactId>
-    <version>0.0.6.20250904_beta</version>
+    <version>0.0.7.20250905_beta</version>
     <name>simple-team-blog</name>
     <description>mkdir</description>
     <properties>

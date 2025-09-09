@@ -10,4 +10,19 @@
         </foreach>
         order by update_time desc
     </select>
+    
+    <select id="queryArticle" resultType="org.genntii.mkdir.domain.vo.ArticleInfoVO">
+        select id, cover_id, author, title, introduction, update_time
+        from article
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND title like concat('*', #{keyword}, '*')
+            </if>
+            <if test="userId != null and userId != 0L ">
+                AND author = #{userId}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        limit #{index}, #{size}
+    </select>
 </mapper>

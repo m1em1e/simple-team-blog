@@ -1,6 +1,7 @@
 package org.genntii.mkdir.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -15,5 +16,9 @@ public interface ImageMapper extends BaseMapper<Image> {
 
     @Select("select * from image where `key` = #{key}")
     Image geyHeightByKey(@Param("key") String key);
+
+
+    @Insert("insert into image(id, height, width, `key`, type) value (#{id}, #{height}, #{width}, #{key}, #{type})")
+    void insertImage(@Param("id") Long id, @Param("height") int height, @Param("width") int width, @Param("key") String key, @Param("type") String type);
 
 }

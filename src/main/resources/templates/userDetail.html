@@ -162,10 +162,11 @@
         /* 主要内容区域 */
         .main-container {
             display: flex;
-            justify-content: flex-start;
-            align-items: center;
+            justify-content: space-between;
+            align-items: flex-start;
             min-height: calc(100vh - 80px);
             padding: 40px;
+            gap: 40px;
         }
 
         /* 用户信息卡片 */
@@ -222,11 +223,11 @@
         .detail-content {
             display: flex;
             flex-direction: column;
+            gap: 5px;
         }
 
         .detail-label {
             font-weight: 600;
-            margin-bottom: 5px;
             color: #a0a0c0;
         }
 
@@ -259,18 +260,19 @@
         }
 
         /* 响应式设计 */
-        @media (max-width: 992px) {
+        @media (max-width: 1200px) {
             .main-container {
-                justify-content: center;
+                flex-direction: column;
+                align-items: center;
             }
 
-            .user-card {
-                width: 90%;
-                max-width: 400px;
+            .user-card, .article-container {
+                width: 100%;
+                max-width: 100%;
             }
         }
 
-        @media (max-width: 576px) {
+        @media (max-width: 768px) {
             .header {
                 padding: 15px 20px;
             }
@@ -310,10 +312,245 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        .footer {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            color: #a0a0b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #a0a0b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #6a11cb;
+        }
+
+        .beian-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .beian-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        /* 文章列表容器 */
+        .article-container {
+            flex: 1;
+            background: transparent;
+            max-width: 800px;
+        }
+
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .article-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff7eee 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .toggle-articles-btn {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-articles-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 横长条文章卡片列表 */
+        .articles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .article-card {
+            background: rgba(25, 25, 40, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            height: 180px;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .article-cover {
+            width: 280px;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .article-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #a0a0c0;
+        }
+
+        .article-categories {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .article-category {
+            background: rgba(106, 17, 203, 0.2);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+        }
+
+        .article-title-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-intro {
+            color: #c0c0e0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #a0a0c0;
+            font-size: 0.85rem;
+        }
+
+        .article-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .author-avatar {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* 分页控件 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .pagination-btn {
+            background: rgba(106, 17, 203, 0.3);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: rgba(106, 17, 203, 0.5);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            display: flex;
+            align-items: center;
+            color: #a0a0c0;
+        }
+
+        /* 加载状态 */
+        .articles-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #a0a0c0;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #6a11cb;
+        }
     </style>
 </head>
 <body>
-<!-- 背景容器 -->
 <div class="background-container">
     <img id="backgroundImage" class="background-image" th:src="${background}" alt="背景图片">
 </div>
@@ -384,7 +621,6 @@
                 <div class="detail-content">
                     <span class="detail-label">标签</span>
                     <div class="tags-container" id="tags-container">
-
                     </div>
                 </div>
             </div>
@@ -396,9 +632,41 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 添加切换文章列表按钮 -->
+            <div class="detail-item">
+                <button class="toggle-articles-btn" id="toggleArticlesBtn">
+                    <i class="fas fa-eye"></i> 显示文章列表
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 文章列表容器 -->
+    <div class="article-container" id="articleContainer" style="display: none;">
+        <div class="article-header">
+            <h2 class="article-title">我的文章</h2>
+        </div>
+
+        <div class="articles-list" id="articlesList">
+            <!-- 文章卡片将通过JS动态添加 -->
+        </div>
+
+        <!-- 分页控件 -->
+        <div class="pagination" id="pagination">
+            <button class="pagination-btn" id="prevPageBtn" disabled>上一页</button>
+            <div class="pagination-info">第 <span id="currentPage">1</span> 页</div>
+            <button class="pagination-btn" id="nextPageBtn">下一页</button>
         </div>
     </div>
 </div>
+
+<footer class="footer">
+    <div class="beian-info">
+        <a href="https://beian.miit.gov.cn/" target="_blank">XICP备XXXXXXXXXXXXX号</a>
+        <span>© 2023 咩咩青羽的游戏开发小屋 All Rights Reserved</span>
+    </div>
+</footer>
 
 <script>
     const loginBtn = document.getElementById('loginBtn');
@@ -409,12 +677,142 @@
     const authToken = localStorage.getItem('authToken')
     let userAvatar = document.getElementById('userAvatar');
 
-    // 页面加载时初始化
+    let currentPage = 1;
+    const pageSize = 6;
+    let totalPages = 1;
+    let articlesVisible = false;
+
     document.addEventListener('DOMContentLoaded', function() {
         checkAuthStatus();
         setupEventListeners();
-        getUser()
+        getUser();
+
+        // 设置文章列表切换按钮事件
+        const toggleArticlesBtn = document.getElementById('toggleArticlesBtn');
+        if (toggleArticlesBtn) {
+            toggleArticlesBtn.addEventListener('click', toggleArticlesVisibility);
+        }
+
+        // 设置分页按钮事件
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        if (prevPageBtn && nextPageBtn) {
+            prevPageBtn.addEventListener('click', () => changePage(currentPage - 1));
+            nextPageBtn.addEventListener('click', () => changePage(currentPage + 1));
+        }
     });
+
+    // 切换文章列表显示/隐藏
+    function toggleArticlesVisibility() {
+        const articleContainer = document.getElementById('articleContainer');
+        const toggleBtn = document.getElementById('toggleArticlesBtn');
+
+        articlesVisible = !articlesVisible;
+
+        if (articlesVisible) {
+            articleContainer.style.display = 'block';
+            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> 隐藏文章列表';
+            // 首次显示时加载文章
+            if (document.getElementById('articlesList').children.length === 0) {
+                loadArticles(currentPage);
+            }
+        } else {
+            articleContainer.style.display = 'none';
+            toggleBtn.innerHTML = '<i class="fas fa-eye"></i> 显示文章列表';
+        }
+    }
+
+    // 加载文章列表
+    function loadArticles(page) {
+        const articlesList = document.getElementById('articlesList');
+        articlesList.innerHTML = '<div class="articles-loading"><div class="spinner"></div></div>';
+
+        const userId = getUserIdFromUrl();
+        const params = {
+            pageIndex: page,
+            pageSize: pageSize,
+            userId: userId
+        };
+
+        axios.get('/api/article/info', { params })
+            .then(response => {
+                if (response.data.code === 1) {
+                    displayArticles(response.data.data);
+                    updatePagination();
+                } else {
+                    articlesList.innerHTML = '<div class="empty-state"><i class="fas fa-file-alt"></i><p>暂无文章</p></div>';
+                }
+            })
+            .catch(error => {
+                console.error('加载文章出错:', error);
+                articlesList.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>加载文章出错，请刷新页面</p></div>';
+            });
+    }
+
+    // 渲染文章列表
+    function displayArticles(articles) {
+        const articlesList = document.getElementById('articlesList');
+
+        if (!articles || articles.length === 0) {
+            articlesList.innerHTML = '<div class="empty-state"><i class="fas fa-file-alt"></i><p>暂无文章</p></div>';
+            return;
+        }
+
+        let articlesHTML = '';
+
+        articles.forEach(article => {
+            articlesHTML += `
+                <div class="article-card">
+                    <img src="${article.coverId}" alt="文章封面" class="article-cover">
+                    <div class="article-content">
+                        <div class="article-meta">
+                            <div class="article-categories">
+                                ${article.categoryList.map(cat =>
+                `<span class="article-category">${cat.categoryName}</span>`
+            ).join('')}
+                            </div>
+                            <div class="article-date">${formatDate(article.updateTime)}</div>
+                        </div>
+                        <h3 class="article-title-text">${article.title}</h3>
+                        <p class="article-intro">${article.introduction}</p>
+                        <div class="article-footer">
+                            <div class="article-author">
+                                <img src="${article.authorAvatarUrl}" alt="作者头像" class="author-avatar">
+                                <span>${article.authorName}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        articlesList.innerHTML = articlesHTML;
+    }
+
+    // 更改页码
+    function changePage(page) {
+        if (page < 1 || page > totalPages) return;
+
+        currentPage = page;
+        loadArticles(currentPage);
+    }
+
+    // 更新分页控件状态
+    function updatePagination() {
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const currentPageSpan = document.getElementById('currentPage');
+
+        currentPageSpan.textContent = currentPage;
+        prevPageBtn.disabled = currentPage <= 1;
+        nextPageBtn.disabled = currentPage >= totalPages;
+    }
+
+    // 格式化日期
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+    }
 
     function checkAuthStatus() {
         if (authToken) {
@@ -431,29 +829,31 @@
                 if (response.data.code === 1) {
                     displayUserDetail(response.data.data)
                 } else {
-                    console.error("加载文章失败，请重试")
+                    console.error("加载用户信息失败，请重试")
                 }
             })
-        //     .catch(error => {
-        //     console.error('error: ', error)
-        // })
+            .catch(error => {
+                console.error('加载用户信息出错: ', error)
+            })
     }
 
     function displayUserDetail(user) {
-        document.getElementById('user-nickname').textContent = user.nickname
+        document.getElementById('user-nickname').textContent = user.nickname || '未设置昵称';
         let sex
         if (user.sex === 1) sex = '男'
         else if (user.sex === 2) sex = '女'
         else sex = '其他'
         document.getElementById('user-sex').textContent = sex
-        document.getElementById('user-birthday').textContent = user.birthday
-        document.getElementById('userAvatar').src = user.avatar
-        document.getElementById('userAvatarLarge').src = user.avatar
-        document.getElementById('user-description').textContent = user.description
-        document.getElementById('backgroundImage').src = user.backgroundImageUrl
-        document.getElementById('lastLoginTime').textContent = user.lastLoginTime
+        document.getElementById('user-birthday').textContent = user.birthday || '未设置生日'
+        document.getElementById('userAvatar').src = user.avatar || '/default-avatar.png'
+        document.getElementById('userAvatarLarge').src = user.avatar || '/default-avatar.png'
+        document.getElementById('user-description').textContent = user.description || '该用户暂无个人描述'
+        document.getElementById('backgroundImage').src = user.backgroundImageUrl || '/default-bg.jpg'
+        document.getElementById('lastLoginTime').textContent = user.lastLoginTime || '未知'
 
         const tagsContainer = document.getElementById('tags-container')
+        tagsContainer.innerHTML = '';
+
         if (user.tags && user.tags.length > 0) {
             user.tags.forEach(tag => {
                 const span = document.createElement('span')
@@ -461,6 +861,8 @@
                 span.textContent = tag
                 tagsContainer.appendChild(span)
             })
+        } else {
+            tagsContainer.innerHTML = '<span>暂无标签</span>';
         }
     }
 

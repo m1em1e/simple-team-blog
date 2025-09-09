@@ -25,4 +25,9 @@ public class PageQueryParam {
      * 查询关键字
      */
     private String keyword;
+
+    /**
+     * 用户id
+     */
+    private Long userId;
 }

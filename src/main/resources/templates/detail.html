@@ -289,6 +289,41 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .footer {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            color: #a0a0b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #a0a0b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #6a11cb;
+        }
+
+        .beian-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .beian-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -355,7 +390,12 @@
         <div class="article-content" id="content" style="display: none;"></div>
     </div>
 </div>
-
+<footer class="footer">
+    <div class="beian-info">
+        <a href="https://beian.miit.gov.cn/" target="_blank">XICP备XXXXXXXXXXXXX号</a>
+        <span>© 2023 咩咩青羽的游戏开发小屋 All Rights Reserved</span>
+    </div>
+</footer>
 <script>
     const loginBtn = document.getElementById('loginBtn');
     const authToken = localStorage.getItem('authToken');

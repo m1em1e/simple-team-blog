@@ -326,6 +326,41 @@
                 width: 150px;
             }
         }
+        .footer {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            color: #a0a0b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #a0a0b8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #6a11cb;
+        }
+
+        .beian-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .beian-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -368,7 +403,11 @@
         <!-- 内容将由JavaScript动态生成 -->
     </div>
 </div>
-
+<footer class="footer">
+    <div class="beian-info">
+        <a href="https://beian.miit.gov.cn/" target="_blank">XICP备XXXXXXXXXXXXX号</a>
+    </div>
+</footer>
 <script>
     // 配置常量
     const CONTENT_WIDTH = 300;

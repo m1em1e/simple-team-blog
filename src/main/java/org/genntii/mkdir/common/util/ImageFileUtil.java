@@ -1,5 +1,6 @@
 package org.genntii.mkdir.common.util;
 
+import cn.hutool.core.util.IdUtil;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
@@ -11,6 +12,7 @@ import org.genntii.mkdir.common.properties.CosProperties;
 import org.genntii.mkdir.domain.entity.Image;
 import org.genntii.mkdir.mapper.ImageMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -37,6 +39,7 @@ public class ImageFileUtil {
     @Resource
     private ImageMapper imageMapper;
 
+    @Transactional
     public String upload(MultipartFile file) {
     try {
         // 1. 验证文件
@@ -55,17 +58,15 @@ public class ImageFileUtil {
         PutObjectRequest putObjectRequest = new PutObjectRequest(
                 cosProperties.getBucketName(), key, file.getInputStream(), metadata);
 
-        cosClient.putObject(putObjectRequest);
-
-
         BufferedImage bufferedImage = ImageIO.read(file.getInputStream());
         Image image = new Image();
+        image.setId(IdUtil.getSnowflakeNextId());
         image.setKey(key);
         image.setType(file.getContentType());
         image.setHeight(bufferedImage.getHeight());
         image.setWidth(bufferedImage.getWidth());
-        imageMapper.insert(image);
-
+        imageMapper.insertImage(image.getId(), image.getHeight(), image.getWidth(), image.getKey(), image.getType());
+        cosClient.putObject(putObjectRequest);
         return key;
     } catch (Exception e) {
         throw new ImageErrorException("图片上传失败: " + e.getMessage());
